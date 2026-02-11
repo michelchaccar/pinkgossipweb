@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+
+<head>
+  <%- include('../include/_head') %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js"></script>
+</head>
+
+<body>
+    <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
+
+    <!-- Desktop sidebar -->
+
+    <%- include('../include/_sidebar') %>
+    
+    <div class="flex flex-col flex-1 w-full">
+
+      <%- include('../include/_header') %>
+
+      
+     <main class="h-full overflow-y-auto">
+        <div class="container mx-auto grid px-6">
+         <div class="flex justify-between">
+            <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+              Flagged Users
+              </h2>
+         </div>
+         <div id="showing-info"></div>
+
+         <!-- Search input -->
+
+          <!-- Table -->
+          <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+            <div id="all-tab" class="w-full rounded-lg shadow-xs">
+            <div class="w-full overflow-x-auto">
+              <table class="w-full whitespace-no-wrap">
+                <div class="row mt-4 flex flex-1 w-full mb-2">
+                  <div class="relative col-sm-12 col-md-6 max-w-xl ml-6 focus-within:text-purple-500" >
+                    <div class="absolute inset-y-0 flex items-center pl-2">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" style="fill:var(--);">
+                        <path fill-rule="evenodd"
+                          d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                          clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                    <input
+                      class=" search-input-1 w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                      type="text" placeholder="Search" aria-label="Search"  style="    border: 1px solid #D5D6D7;"/>
+                  </div>
+                </div>
+                <!-- <div class="row mt-4"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"><div style="text-align: right;"><label>Search:<input type="search" class="form-control form-control-sm search-input-1" placeholder="" style="margin-left: 0.5em;
+                  display: inline-block;
+                  width: auto;"></label></div></div></div> -->
+                <thead>
+                  <tr
+                    class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                    <th class="px-4 py-3" style="width: 150px">Name</th>
+                    <th class="px-4 py-3">Email</th>
+                    <th class="px-4 py-3">Date of birth</th>
+                    <th class="px-4 py-3">Gender</th>
+                    <th class="px-4 py-3">Hometown</th>
+                    <th class="px-4 py-3">No. Report</th>
+                    <th class="px-4 py-3">Registration Date</th>
+                    <th class="px-4 py-3">Action</th>
+
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800 table-tbody">
+                  <% if (flaggedUserData && flaggedUserData.length> 0) { %>
+                    <% flaggedUserData.forEach(function(flaggedUser) { %>
+                  <tr class="text-gray-700 dark:text-gray-400  table-row">
+                    <td class="px-4 py-3" style="text-wrap: wrap;">
+                      <div class="flex items-center text-sm">
+                        <div class="relative w-8 h-8 mr-3 rounded-full md:block">
+                          <img class="object-cover w-full h-full rounded-full"
+                              src="<%= flaggedUser.first_image === null ? base_url + '/img' + '/photo-1570612861542-284f4c12e75f.jpg' : '/upload/' + flaggedUser.first_image %>"
+                              alt="" loading="lazy" />
+                            <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                          </div>
+                        <div>
+                          <p class="font-semibold"> <%= flaggedUser.first_name %>  <%= flaggedUser.last_name %></p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= flaggedUser.email %>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= flaggedUser.dob ? new Date(flaggedUser.dob).toLocaleDateString() : 'N/A' %>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= flaggedUser.gender %>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= flaggedUser.hometown %>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= flaggedUser.report_count %>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= flaggedUser.created_at ? new Date(flaggedUser.created_at).toLocaleDateString() : 'N/A' %>
+                    </td>
+                    <td>
+                      <div class="flex flex-row">
+                        <a href="/admin/user-details/<%= flaggedUser.id  %>">
+                          <button class="border rounded px-4 py-1 mr-2">Details</button>
+                        </a>
+                        <a href="javascript:void(0);" onclick="ajaxCallUpdateStatus('/admin/user-update-status/<%= flaggedUser.id %>/delete', 'Are you sure you want to delete this user?', 'user-active-3')">
+                          <button class="border rounded px-4 py-1 mr-2">Delete</button>
+                      </a>
+                      <% if (flaggedUser.suspend == 0) { %>
+                          <a href="javascript:void(0);" onclick="ajaxCallUpdateStatus('/admin/user-update-status/<%= flaggedUser.id %>/suspend', 'Are you sure you want to suspend this user?', 'user-active-3')">
+                              <button class="border rounded px-4 py-1">Suspend</button>
+                          </a>
+                      <% } else { %>
+                          <a href="javascript:void(0);" onclick="ajaxCallUpdateStatus('/admin/user-update-status/<%= flaggedUser.id %>/unsuspend', 'Are you sure you want to unsuspend this user?', 'user-active-3')">
+                              <button class="border rounded px-4 py-1">UnSuspend</button>
+                          </a>
+                      <% } %>   
+                    </div>
+                    </td>
+                  </tr>
+                  <% } ) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+            <div
+                    class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+                    <span class="flex items-center col-span-3" id="showing-info-1">
+                      <!-- Showing 21-30 of 100 -->
+                    </span>
+                    <span class="col-span-2"></span>
+                    <!-- Pagination -->
+                    <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                      <nav aria-label="Table navigation">
+                        <div id="pagination-container-1"></div>
+                      </nav>
+                    </span>
+                  </div>
+       </div>
+        </div>
+        </div>
+      </main>
+      <!-- end content -->
+    </div>
+  </div>
+
+  <%- include('../include/_footer') %>
+
+  <script>
+    $(document).ready(function() {
+        $('.flagged-user-sidebar').each(function() {
+          var spanElement = $('<span class="absolute inset-y-0 left-0 w-1 rounded-tr-lg rounded-br-lg" style="background-color:var(--blue-color);" aria-hidden="true"></span>');
+              $(this).before(spanElement);
+              $(this).addClass('text-gray-800');
+        });
+    });
+  </script>
+</body>
+</html>
+
+

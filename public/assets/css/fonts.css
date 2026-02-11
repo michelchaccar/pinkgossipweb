@@ -1,0 +1,16 @@
+@font-face {
+    font-family: CircleBook;
+    src: url("../fonts/CircularStd-Book.otf") format("opentype");
+}
+@font-face {
+    font-family: CircleLight;
+    src: url("../fonts/CircularStd-Light.otf") format("opentype");
+}
+@font-face {
+    font-family: CircleMedium;
+    src: url("../fonts/CircularStd-Medium.otf") format("opentype");
+}
+@font-face {
+    font-family: CircleBold;
+    src: url("../fonts/CircularStd-Bold.otf") format("opentype");
+}

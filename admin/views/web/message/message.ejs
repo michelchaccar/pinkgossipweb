@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pink Gossip - Messages</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    #chatList{width:280px}
+    #chatListContainer{height:calc(100vh - 150px);overflow:auto}
+    #messagesContainer{height:calc(100vh - 220px);overflow:auto}
+  </style>
+  <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FBE3E6',
+                        secondary: '#fce7f3',
+                        'pink-primary': '#FBE3E6',
+                        'pink-secondary': '#fce7f3',
+                        'pink-accent': '#EC1F95',
+                        'black-secondary': '#22222C',
+                        'color-secondary': '#717171',
+                        'color-gray-2': '#2C2C2C',
+                        'underline-color': '#EBEBEB',
+                        'input-border': '#D0D0D0'
+                    },
+                    fontFamily: {
+                        'sans': ['Roboto', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-pink-50 to-white font-sans">
+    <!-- Top Navigation -->
+     <%- include('../../include/_webheader', { session: session }) %>
+
+  <!-- NAVIGATION (UNCHANGED) -->
+  <!-- ... keeping original nav ... -->
+
+  <div class="max-w-6xl mx-auto flex">
+    <!-- LEFT CHAT LIST -->
+    <div id="chatList" class="bg-white border-r">
+      <div class="p-4 bg-white border-b flex items-center">
+        <img id="" src="<%= session.user && session.user.profile_image ? '/api/' + session.user.profile_image : '/img/jane-done.png' %>" class="w-10 h-10 rounded-full object-cover mr-3"/>
+        <div>
+          <div id="" class="font-semibold">You</div>
+          <div id="" class="text-sm text-pink-500">Online</div>
+        </div>
+      </div>
+      <div class="p-3 border-b"><input id="chatSearch" placeholder="Search..." class="w-full px-3 py-2 border rounded" /></div>
+      <div id="chatListContainer"></div>
+    </div>
+
+    <!-- RIGHT CHAT WINDOW -->
+    <div class="flex-1 flex flex-col">
+      <div class="p-4 bg-white border-b flex items-center">
+        <img id="activeAvatar" src="/img/jane-done.png" class="w-10 h-10 rounded-full object-cover mr-3"/>
+        <div>
+          <div id="activeName" class="font-semibold">Select a chat</div>
+          <div id="activeStatus" class="text-xs text-gray-500">Offline</div>
+        </div>
+      </div>
+
+      <div id="messagesContainer" class="flex-1 p-4 bg-white"></div>
+
+      <div class="p-4 bg-white border-t flex items-center">
+        <textarea id="messageInput" class="flex-1 px-3 py-2 border rounded" rows="1" placeholder="Type a message..."></textarea>
+        <button id="sendBtn" class="ml-3 bg-blue-600 text-white px-4 py-2 rounded">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    ////////////////////////////////////////////
+    // FIREBASE CONFIG
+    ////////////////////////////////////////////
+    var firebaseConfig = {
+      apiKey: "AIzaSyCDOxbU-HdqCfeoSeSN6mOHr27bqXE1ExQ",
+      authDomain: "pinkgossip-936f9.firebaseapp.com",
+      databaseURL: "https://pinkgossip-936f9-default-rtdb.firebaseio.com",
+      projectId: "pinkgossip-936f9",
+      storageBucket: "pinkgossip-936f9.firebasestorage.app",
+      messagingSenderId: "802780236204",
+      appId: "1:802780236204:web:faeeba5f2bd8d83b245209"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const senderId = "<%= typeof sender_firebase_id !== 'undefined' ? sender_firebase_id : session.user.firebase_id %>";
+    const BASE_URL = "<%= BASE_URL %>";
+
+    let chatList = {};
+    let usersCache = {};    // store user objects from /users
+    let currentChatKey = null;
+    let currentReceiver = null;
+    let currentMessagesRef = null;
+
+    ////////////////////////////////////////////
+    // USER HELPERS
+    ////////////////////////////////////////////
+    function avatarForUser(u){
+      if(!u || !u.photoUrl) return "/img/jane-done.png";
+      return BASE_URL +'/api/'+ encodeURIComponent(u.photoUrl);
+    }
+
+    function loadAllUsers(){
+      return db.ref('users').once('value').then(s=>{
+        usersCache = s.val() || {};
+        console.log(usersCache);
+      });
+    }
+
+    ////////////////////////////////////////////
+    // CHAT LIST BUILDING
+    ////////////////////////////////////////////
+    function otherUserFromKey(key){
+      const parts = key.split('--');
+      const a = "-"+parts[1];
+      const b = "-"+parts[2];
+      return a === senderId ? b : a;
+    }
+
+    function buildChatList(){
+      db.ref('message').once('value').then(snap=>{
+        const all = snap.val() || {};
+        chatList = {};
+        Object.keys(all).forEach(chatKey=>{
+          if(!chatKey.startsWith('chat--')) return;
+          if(!chatKey.includes(senderId)) return;
+
+          const msgs = all[chatKey] || {};
+          let lastTs=0, lastText='', unread=0;
+          Object.keys(msgs).forEach(k=>{
+            const m = msgs[k];
+            const ts = m.timestamp || parseInt(k) || 0;
+            if(ts > lastTs){ lastTs = ts; lastText = m.content || m.msg || ''; }
+            if(m.idTo === senderId && (m.isSeen!==true && m.isSeen!=='true')) unread++;
+          });
+
+          const other = otherUserFromKey(chatKey);
+          chatList[chatKey] = { chatKey, other, lastText, lastTs, unread };
+        });
+        renderChatList();
+      });
+    }
+
+    ////////////////////////////////////////////
+    // CHAT LIST RENDERING
+    ////////////////////////////////////////////
+    function renderChatList(){
+      const c = document.getElementById('chatListContainer');
+      c.innerHTML = '';
+
+      const items = Object.values(chatList).sort((a,b)=> (b.lastTs||0)-(a.lastTs||0));
+      if(items.length===0){ c.innerHTML='<div class="p-4 text-gray-500">No conversations</div>'; return; }
+      console.log("usersCache cgheck");
+//console.log(usersCache);
+      items.forEach(it=>{
+       // console.log(it.other);
+        const user = usersCache[it.other] || {};
+        const name = user.nickname || "Unknown user";
+        const avatar = avatarForUser(user);
+
+       // console.log(user);
+        const el = document.createElement('div');
+        el.className = 'p-3 border-b flex items-center cursor-pointer hover:bg-gray-50';
+        el.innerHTML = `
+          <img src="${avatar}" class="w-10 h-10 rounded-full mr-3"/>
+          <div class="flex-1">
+            <div class="flex justify-between">
+              <div class="font-semibold">${escapeHtml(name)}</div>
+              <div class="text-xs text-gray-500">${formatTime(it.lastTs)}</div>
+            </div>
+            <div class="text-sm text-gray-600 truncate">${escapeHtml(shortText(it.lastText))}</div>
+          </div>
+          ${it.unread ? `<div class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">${it.unread}</div>` : ''}
+        `;
+        el.onclick = ()=>openChat(it.chatKey, it.other);
+        c.appendChild(el);
+      });
+    }
+    function shortText(str, max = 30) {
+    if (!str) return "";
+    return str.length > max ? str.substring(0, max) + "..." : str;
+}
+
+function formatTime(ts) {
+    if (!ts) return "";
+
+    const date = new Date(ts);
+    const now = new Date();
+
+    const isToday =
+        date.getDate() === now.getDate() &&
+        date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear();
+
+    if (isToday) {
+        // Show time only (HH:MM)
+        return date.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    } else {
+        // Show only date (DD/MM/YYYY)
+        return date.toLocaleDateString("en-GB"); // 31/01/2025 format
+    }
+}
+    ////////////////////////////////////////////
+    // OPEN CHAT
+    ////////////////////////////////////////////
+    function openChat(chatKey, otherUserId){
+      currentChatKey = chatKey;
+      currentReceiver = otherUserId;
+
+      const user = usersCache[otherUserId] || {};
+      document.getElementById('activeName').innerText = user.nickname || otherUserId;
+      document.getElementById('activeAvatar').src = avatarForUser(user);
+      document.getElementById('activeStatus').innerText = user.status || 'Offline';
+
+      const mc = document.getElementById('messagesContainer');
+      mc.innerHTML = '';
+
+      if(currentMessagesRef) currentMessagesRef.off();
+      currentMessagesRef = db.ref('message').child(chatKey);
+
+      currentMessagesRef.orderByKey().on('child_added', snap=>{
+        const m = snap.val(); appendMessage(m);
+        if(m.idTo===senderId && (m.isSeen!==true && m.isSeen!=='true')){
+          currentMessagesRef.child(snap.key).update({ isSeen:true }).catch(()=>{});
+        }
+      });
+    }
+
+    ////////////////////////////////////////////
+    // APPEND MESSAGE TO SCREEN
+    ////////////////////////////////////////////
+    function appendMessage(m){
+      const c = document.getElementById('messagesContainer');
+      const time = m.timestamp? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
+      const div = document.createElement('div');
+
+      if(m.idFrom === senderId){
+        div.className = 'flex justify-end mb-2';
+        div.innerHTML = `
+          <div class="bg-blue-100 p-2 rounded max-w-md">${escapeHtml(m.content)}</div>
+          <div class="text-xs text-gray-500 ml-2">${time}</div>
+        `;
+      } else {
+        const u = usersCache[m.idFrom] || {};
+        div.className = 'flex items-start mb-2';
+        div.innerHTML = `
+          <img src="${avatarForUser(u)}" class="w-8 h-8 rounded-full mr-2"/>
+          <div>
+            <div class="bg-gray-100 p-2 rounded max-w-md">${escapeHtml(m.content)}</div>
+            <div class="text-xs text-gray-500 mt-1">${time}</div>
+          </div>
+        `;
+      }
+
+      c.appendChild(div);
+      c.scrollTop = c.scrollHeight;
+    }
+
+    ////////////////////////////////////////////
+    // SEND MESSAGE
+    ////////////////////////////////////////////
+    document.getElementById('sendBtn').addEventListener('click', ()=>{
+      const txt = document.getElementById('messageInput').value.trim();
+      if(!txt) return;
+      if(!currentChatKey){ alert('Choose a chat first'); return; }
+
+      const ts = Date.now();
+      const msg = { content:txt, idFrom:senderId, idTo:currentReceiver, timestamp:ts, type:0, isSeen:false };
+
+      db.ref('message').child(currentChatKey).child(String(ts)).set(msg).then(()=>{
+        document.getElementById('messageInput').value='';
+        buildChatList();
+      });
+    });
+
+    ////////////////////////////////////////////
+    // UTILITIES
+    ////////////////////////////////////////////
+    //function formatTime(ts){ if(!ts) return ''; return new Date(Number(ts)).toLocaleString(); }
+    function escapeHtml(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    ////////////////////////////////////////////
+    // INIT
+    ////////////////////////////////////////////
+    window.addEventListener('load', ()=>{
+      loadAllUsers().then(()=>{
+        buildChatList();
+      });
+
+      document.getElementById('chatSearch').addEventListener('input', e=>{
+        const q = e.target.value.toLowerCase();
+        Array.from(document.getElementById('chatListContainer').children).forEach(ch=>{
+          ch.style.display = ch.innerText.toLowerCase().includes(q) ? '' : 'none';
+        });
+      });
+    });
+
+  </script>
+
+</body>
+</html>

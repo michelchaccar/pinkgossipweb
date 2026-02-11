@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+
+<head>
+  <%- include('../include/_head') %>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer></script>
+  <script src="/js/charts-pie.js" defer></script>
+  <script src="/js/charts-bars.js" defer></script>
+
+   <!-- DataTables jQuery -->
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+</head>
+<style>
+  /* Wrap the info and pagination into a flex row */
+  div.dataTables_wrapper .dataTables_info,
+  div.dataTables_wrapper .dataTables_paginate {
+    margin-top: 1rem;
+  }
+
+  div.dataTables_wrapper .dataTables_length,
+  div.dataTables_wrapper .dataTables_filter,
+  div.dataTables_wrapper .dataTables_info,
+  div.dataTables_wrapper .dataTables_paginate {
+    padding: 0.5rem 1rem;
+  }
+  div.dataTables_wrapper .dataTables_info {
+    padding: 0; /* Remove padding for info line */
+    margin-top: 0.0;
+    margin-bottom: 0.25;
+}
+div.dataTables_wrapper .dataTables_paginate {
+  margin-top: 0.0;
+  margin-bottom: 0.25;
+}
+  div.dataTables_wrapper .dataTables_info_paginate_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Stack on mobile */
+    margin-top: 0rem;
+  }
+
+   /* Custom pagination buttons */
+   .dataTables_wrapper .dataTables_paginate .paginate_button {
+ 
+ font-size: 0.875rem;
+ border: 0 solid #d5d6d7;
+ border-radius: 0.0;
+ padding: 0.25rem 0.50rem;
+ margin: 0 0.25rem;
+ cursor: pointer;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+ background-color: #EC1F95;
+ color: white;
+}
+
+  .dataTables_wrapper .dataTables_info {
+    font-size: 0.875rem;
+    color: #4B5563;
+  }
+  /* Style for empty table row */
+.dataTables_empty {
+    text-align: center !important;  /* Center text */
+    font-weight: bold;              /* Make it bold */
+    font-size: 16px;                /* Slightly bigger font */
+    color: #888;                    /* Light gray text */
+    background-color: #f8f9fa;      /* Light background */
+    padding: 15px !important;       /* Add more padding */
+    border-radius: 6px;             /* Smooth rounded corners */
+}
+
+/* Adjust for dark mode */
+.dark .dataTables_empty {
+    color: #bbb;                    /* Light text for dark mode */
+    background-color: #222;          /* Darker background */
+}
+
+</style>
+<body>
+  <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
+    <!-- Desktop sidebar -->
+
+    <%- include('../include/_sidebar') %>
+    
+    <div class="flex flex-col flex-1 w-full">
+
+      <%- include('../include/_header') %>
+
+      <!-- content  -->
+      
+      <main class="h-full overflow-y-auto">
+        <div class="container mx-auto grid">
+         <div class="flex justify-between">
+            <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+                Manage Post
+              </h2>
+              
+            
+         </div>
+
+
+
+          <!-- Table -->
+          <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+            <div class="w-full overflow-x-auto">
+                <table id="usersTable" class="w-full whitespace-no-wrap">
+                    <thead>
+                      <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">User</th>
+                        <th class="px-4 py-3">Beauty Business</th>
+                        <th class="px-4 py-3">Before Image</th>
+                        <th class="px-4 py-3">After Image</th>
+                        <th class="px-4 py-3">Other</th>
+                        <th class="px-4 py-3">Rating</th>
+                        <th class="px-4 py-3">Review</th>
+                        <th class="px-4 py-3">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                      <% if (posts.length > 0) { %>
+                        <% posts.forEach(function(post) { %>
+                          <tr class="text-gray-700 dark:text-gray-400">
+                            <td class="px-4 py-3"><%= post.user_first_name %> <%= post.user_last_name %></td>
+                            <td class="px-4 py-3"><%= post.salon_first_name %> <%= post.salon_last_name %><br/><%= post.salon_name %></td>
+                            <td class="px-4 py-3"><% if (post.before_image) { %><img src="/api/<%= post.before_image %>" width="50"> <% } %></td>
+                            <td class="px-4 py-3"><% if (post.after_image) { %><img src="/api/<%= post.after_image %>" width="50"><% } %></td>
+                            <td class="px-4 py-3">
+    <% if (post.other_multi_Post && post.other_multi_Post.length > 0) { %>
+        <img src="/api/<%= post.other_multi_Post[0].other_data %>" width="50">
+    <% } else { %>
+        <span class="text-gray-400">No Image</span>
+    <% } %>
+</td>
+
+                            <td class="px-4 py-3 text-sm"><%= post.rating %></td>
+                            <td class="px-4 py-3 text-sm" style="word-wrap: break-word;white-space: normal;max-width: 300px;"><%= post.review %></td>
+                            <td class="px-4 py-3 text-sm">
+                              <a href="/admin/salon-posts/delete/<%= post.id %>?p=1" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this post?')"><b>Delete</b></a>
+                            </td>
+                          </tr>
+                        <% }); %>
+                      <% } else { %>
+                     
+                      <% } %>
+                    </tbody>
+                  </table>
+            </div>
+            
+          </div>
+          <!-- table end-->
+        </div>
+      </main>
+      <!-- end content -->
+    </div>
+  </div>
+
+  <%- include('../include/_footer') %>
+
+  <script>
+      $(document).ready(function () {
+        const table = $('#usersTable').DataTable({
+      pageLength: 100,
+      lengthChange: false,
+      ordering: false,
+      searching: false,
+      responsive: true
+    });
+  
+    // Combine info + pagination into one wrapper
+    setTimeout(() => {
+      const $wrapper = $('#usersTable_wrapper');
+      const $info = $wrapper.find('.dataTables_info');
+      const $paginate = $wrapper.find('.dataTables_paginate');
+  
+      const $customWrapper = $('<div class="dataTables_info_paginate_wrapper w-full px-4"></div>');
+      $info.appendTo($customWrapper);
+      $paginate.appendTo($customWrapper);
+      $wrapper.append($customWrapper);
+    }, 0);
+  
+  
+  
+        // Sidebar color effect
+        $('.dashboard-sidebar').each(function() {
+          var spanElement = $('<span class="absolute inset-y-0 left-0 w-1 rounded-tr-lg rounded-br-lg" style="background-color:var(--blue-color);" aria-hidden="true"></span>');
+          $(this).before(spanElement);
+          $(this).addClass('text-gray-800');
+        });
+      });
+    </script>
+  
+</body>
+</html>

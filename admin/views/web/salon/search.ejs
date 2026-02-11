@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Gossip - Beauty Salon Discovery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FBE3E6',
+                        secondary: '#fce7f3',
+                        'pink-primary': '#FBE3E6',
+                        'pink-secondary': '#fce7f3',
+                        'pink-accent': '#EC1F95',
+                        'black-secondary': '#22222C',
+                        'color-secondary': '#717171',
+                        'color-gray-2': '#2C2C2C',
+                        'underline-color': '#EBEBEB',
+                        'input-border': '#D0D0D0'
+                    },
+                    fontFamily: {
+                        'sans': ['Roboto', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Italiana&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #EC1F95;
+        }
+
+        .active {
+            border-bottom: 2px solid var(--primary-pink);
+        }
+
+        .active path {
+            stroke: var(--primary-pink);
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body class="bg-gradient-to-br from-pink-50 to-white font-sans">
+    <!-- Top Navigation -->
+   <%- include('../../include/_webheader', { session: session }) %>
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto min-h-screen">
+        <!-- Main Content -->
+        <div class="flex gap-8 p-6">
+            <!-- Sidebar -->
+            <aside class="hidden lg:block w-80 space-y-6">
+                <!-- Trending Salons -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Searches</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <a href="#" class="text-sm font-medium text-gray-900 hover:text-red-500">Glamour
+                                    Studio</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <a href="#" class="text-sm font-medium text-gray-900 hover:text-red-500">Beauty
+                                    Bliss</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <a href="#" class="text-sm font-medium text-gray-900 hover:text-red-500">Chic Salon</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Search Result -->
+            <main class="flex-1 mx-auto space-y-6">
+                <!-- Heading -->
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-900">Search</h2>
+                    <div class="relative mt-2">
+                        <input id="searchInput"
+                              class="border border-input-border rounded-full py-2 px-4 w-full"
+                                placeholder="Enter keyword"
+                                onkeyup="searchSalon()" />
+
+                        <button>
+                            <img src="/img/search-icon.svg" class="absolute top-2 right-5" />
+                        </button>
+                    </div>
+                </div>
+                <!-- Toggle View -->
+                <div class="flex items-center bg-white p-1 shadow-sm rounded-md">
+                    <button id="listViewBtn"
+                        class="flex items-center space-x-2 px-4 py-2 active font-medium transition-colors">
+
+                        <span>Beauty Enthusiasts</span>
+                    </button>
+                    <button id="mapViewBtn"
+                        class="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors">
+
+                        <span>Beauty Salons</span>
+                    </button>
+                </div>
+
+                <!-- list View -->
+                <div id="listView">
+                      <div class="flex flex-col gap-2 w-full">
+
+                          <% enthusiasts.forEach(user => { %>
+                              <div class="w-full bg-white shadow-sm border-underline-color border-b-[1px] p-4 overflow-hidden flex">
+                                  <div class="w-full flex space-x-4">
+                                       <img src="<%= user.profile_image ? 'api/'+encodeURIComponent(user.profile_image) : '/img/logo3x.png' %>"
+                                          class="w-12 h-12 rounded-full object-contain">
+
+                                      <div class="flex w-full flex-col">
+                                          <h3 class="font-medium"><%= user.user_name || (user.first_name + ' ' + user.last_name) %></h3>
+                                          <span class="text-color-secondary font-normal">Beauty Enthusiast</span>
+                                      </div>
+                                  </div>
+                              </div>
+                          <% }) %>
+
+                      </div>
+                  </div>
+
+
+                <!-- Map View -->
+                <div id="mapView" class="hidden pb-6">
+                      <div class="bg-white">
+                          <div class="flex flex-col gap-2">
+
+                              <% salons.forEach(salon => { %>
+                                  <div class="w-full bg-white shadow-sm border-underline-color border-b-[1px] p-4 overflow-hidden flex">
+                                      <div class="w-full flex space-x-4">
+                                          <img src="<%= salon.profile_image ? 'api/'+encodeURIComponent(salon.profile_image) : '/img/logo3x.png' %>"
+                                              class="w-12 h-12 rounded-full object-contain">
+
+                                          <div class="flex w-full flex-col">
+                                              <h3 class="font-medium"><%= salon.salon_name %></h3>
+
+                                              <div class="flex items-center space-x-1 mt-1">
+                                                  <span class="text-sm text-gray-400"><%= salon.avg_rating.toFixed(1) %></span>
+
+                                                  <div class="flex items-center space-x-1">
+                                                      ⭐⭐⭐⭐⭐
+                                                  </div>
+
+                                                  <span class="text-sm text-gray-400">(<%= salon.total_reviews %>)</span>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              <% }) %>
+
+                          </div>
+                      </div>
+                  </div>
+
+
+            </main>
+        </div>
+    </div>
+</body>
+<script>
+    const listViewBtn = document.getElementById('listViewBtn');
+    const mapViewBtn = document.getElementById('mapViewBtn');
+    const listView = document.getElementById('listView');
+    const mapView = document.getElementById('mapView');
+    listViewBtn.addEventListener('click', () => {
+        // Update button styles
+        listViewBtn.classList.add('active');
+        mapViewBtn.classList.remove('active');
+
+        // Show/hide views
+        listView.classList.remove('hidden');
+        mapView.classList.add('hidden');
+    });
+
+    mapViewBtn.addEventListener('click', () => {
+        // Update button styles
+        mapViewBtn.classList.add('active');
+        listViewBtn.classList.remove('active');
+
+        // Show/hide views
+        mapView.classList.remove('hidden');
+        listView.classList.add('hidden');
+
+    });
+
+async function searchSalon() {
+    let keyword = document.getElementById("searchInput").value.trim();
+
+    const response = await fetch(`/web/search-salons?keyword=${encodeURIComponent(keyword)}`);
+    //const data = await response.json();
+    const { enthusiasts, salons } = await response.json();
+
+updateListView(enthusiasts);
+updateMapView(salons);
+
+    //updateListView(data);
+   // updateMapView(data);
+}
+function updateListView(users) {
+    const listView = document.getElementById("listView");
+    listView.innerHTML = "";
+
+    if (!users.length) {
+        listView.innerHTML = `<p class="text-gray-500 p-4">No user found</p>`;
+        return;
+    }
+
+    users.forEach(user => {
+        listView.innerHTML += `
+        <div class="w-full bg-white shadow-sm border-underline-color border-b-[1px] p-4 overflow-hidden flex">
+            <div class="w-full flex space-x-4">
+                <img src="${user.profile_image ? 'api/'+encodeURIComponent(user.profile_image) : '/img/logo3x.png'}"
+                    class="w-12 h-12 rounded-full object-contain">
+
+                <div class="flex w-full flex-col">
+                    <h3 class="font-medium">${user.user_name || user.first_name + " " + user.last_name}</h3>
+                    <span class="text-color-secondary font-normal">Beauty Enthusiast</span>
+                </div>
+            </div>
+        </div>`;
+    });
+}
+
+function updateMapView(salons) {
+    const mapView = document.getElementById("mapView");
+    mapView.innerHTML = "";
+
+    if (!salons.length) {
+        mapView.innerHTML = `<p class="text-gray-500 p-4">No salon found</p>`;
+        return;
+    }
+
+    salons.forEach(salon => {
+        mapView.innerHTML += `
+          <div class="w-full bg-white shadow-sm border-b p-4 overflow-hidden flex">
+            <div class="w-full flex space-x-4">
+                <img src="${salon.profile_image ? 'api/'+encodeURIComponent(salon.profile_image) : '/img/logo3x.png'}"
+                    class="w-12 h-12 rounded-full object-contain">
+
+                <div class="flex w-full flex-col">
+                    <h3 class="font-medium">${salon.salon_name}</h3>
+
+                    <div class="flex items-center space-x-1 mt-1">
+                        <span class="text-sm text-gray-400">${salon.avg_rating.toFixed(1)}</span> <div class="flex items-center space-x-1">
+                                                      ⭐⭐⭐⭐⭐
+                                                  </div>
+                        <span class="text-sm text-gray-400">(${salon.total_reviews})</span>
+                    </div>
+                </div>
+            </div>
+          </div>
+        `;
+    });
+}
+
+</script>
+
+</html>

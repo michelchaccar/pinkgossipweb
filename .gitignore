@@ -2,4 +2,6 @@ node_modules/
 config.js
 app.js
 /public/upload
+serviceAccountKey.json
+web/controller/firebase-service-account.json
 

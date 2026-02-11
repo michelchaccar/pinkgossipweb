@@ -1,0 +1,89 @@
+<script>
+    function ajaxCallFormSubmit(formElement, isToast, loadingMsg, data = {}, callBackFunction = undefined) {
+        $.ajax({
+            url: formElement.attr('action'),
+            type: formElement.attr('method'),
+            processData: false,
+            data: data,
+            contentType: data instanceof FormData ? false : 'application/x-www-form-urlencoded',
+            beforeSend: function () {
+                $('.loading').show();
+            },
+            success: function (res) {
+
+                $('.loading').hide();
+                toastr.remove();
+                toastr.success(res.message);
+
+                if (res.back_url && res.back_url !== 'undefined') {
+                    setTimeout(function () {
+                        window.location.href = res.back_url;
+                    }, 1000)
+                }
+                if (res.form == 'branch_model') {
+                    const select = document.querySelector("select[name='branch_location']");
+                        const newOption = document.createElement("option");
+                        newOption.value = res.response.id;
+                        newOption.textContent = res.response.branch_location;
+                        select.appendChild(newOption);
+                        $('#branchModel').modal('hide');
+                }
+            },
+            error: function (jqXHR) {
+                let errorRes = JSON.parse(jqXHR.responseText);
+                if (errorRes.errors) {
+                    $.each(errorRes.errors, function (key, value) {
+                        toastr.error(value, { timeOut: 10000 });
+                    });
+                } else {
+                    let errorRes = JSON.parse(jqXHR.responseText);
+                    toastr.remove();
+                    toastr.error(errorRes.message, { timeOut: 10000 });
+                }
+                $('.loading').hide();
+            }
+        });
+    }
+</script>
+
+
+
+<script>
+
+    function ajaxCallDelete(url, confirmMsg, tableId) {
+
+        if (confirm(confirmMsg)) {
+            let result;
+            $.ajax({
+                url: url,
+                type: 'get',
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                beforeSend: function () {
+                    $('.loading').show();
+                },
+                success: function (res) {
+                    $('.loading').hide();
+
+                    toastr.remove();
+                toastr.success(res.message);
+
+                    if (res.is_form_page == '1') {
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000)
+                    }
+
+                },
+                error: function (jqXHR) {
+                    $('.loading').hide();
+                    let errorRes = JSON.parse(jqXHR.responseText);
+                    toastr.remove();
+                    toastr.error(errorRes.message);
+                }
+            });
+        }
+    }
+
+</script>

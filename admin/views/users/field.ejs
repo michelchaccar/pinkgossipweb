@@ -1,0 +1,537 @@
+<link href="/css/slider.css" rel="stylesheet" />
+
+<div class="mt-4">
+    <input type="hidden" name="id" value="<%= userEdit.id %>">
+    <label class="block text-sm">
+      <span class="text-gray-700 dark:text-gray-400">First Name</span>
+      <input name="first_name"
+        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+        placeholder="Event Name" value="<%= userEdit.first_name %>"/>
+    </label>
+    
+  </div>
+  <div class="mt-2">
+    <label class="block text-sm">
+      <span class="text-gray-700 dark:text-gray-400">Last Name</span>
+      <input name="last_name"
+        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+        placeholder="Event Name" value="<%= userEdit.last_name %>"/>
+    </label>
+    </div>
+
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Date of birth</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <input name="dob" value="" type="date"
+            class="block w-full pr-10 mt-1 text-sm text-black dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray form-input"
+            placeholder="Date of birth" />
+          
+        </div>
+      </label>
+    </div>
+
+    <div class="mt-2">
+      <label class="block text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Hometown</span>
+        <input name="hometown"
+          class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+          placeholder="Event Hometown" value="<%= userEdit.hometown %>" id="hometown"/>
+      </label>
+      </div>
+      <input type="text" name="latitude" id="latitude" hidden>
+      <input type="text" name="longitude" id="longitude" hidden>
+
+  <div class="mt-2">
+    <label class="block text-sm">
+      <span class="text-gray-700 dark:text-gray-400">Email</span>
+      <input name="email"
+        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+        placeholder="Email" value="<%= userEdit.email %>"/>
+    </label>
+    </div>
+  <div class="mt-2">
+    <label class="block text-sm">
+      <span class="text-gray-700 dark:text-gray-400">Telephone number</span>
+      <input name="telephone_number"
+        class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+        placeholder="Telephone number" value="<%= userEdit.telephone %>"/>
+    </label>
+    </div>
+    <div class="mt-2">
+      <label class="block text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Password</span>
+        <input name="password" type="password"
+          class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+          placeholder="Password" value="<%= userEdit.password %>"/>
+      </label>
+      </div>
+
+    <div class="mt-2">
+      <label class="block text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Bio</span>
+        <input name="bio"
+          class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+          placeholder="Event Bio" value="<%= userEdit.bio %>"/>
+      </label>
+      </div>
+      <h3 style="margin: 15px 0px;"><b>Photos</b></h3>
+
+      <div class="image-upload-container" id="imageGrid">
+        <!-- Initial empty slots -->
+        <div class="image-box" data-index="1">
+            <label for="file1" class="add-btn">+</label>
+            <input type="file" id="file1" name="images" accept="image/*">
+        </div>
+        <div class="image-box" data-index="2">
+            <label for="file2" class="add-btn">+</label>
+            <input type="file" id="file2" name="images" accept="image/*">
+        </div>
+        <div class="image-box" data-index="3">
+            <label for="file3" class="add-btn">+</label>
+            <input type="file" id="file3" name="images" accept="image/*">
+        </div>
+        <div class="image-box" data-index="4">
+            <label for="file4" class="add-btn">+</label>
+            <input type="file" id="file4" name="images" accept="image/*">
+        </div>
+        <div class="image-box" data-index="5">
+            <label for="file5" class="add-btn">+</label>
+            <input type="file" id="file5" name="images" accept="image/*">
+        </div>
+        <div class="image-box" data-index="6">
+            <label for="file6" class="add-btn">+</label>
+            <input type="file" id="file6" name="images" accept="image/*">
+        </div>
+    </div>
+
+      <h3 style="margin: 15px 0px;"><b>About me</b></h3>
+      <div class="mt-2">
+        <label class="block text-sm">
+          <span class="text-gray-700 dark:text-gray-400">Work</span>
+          <input name="work"
+            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+            placeholder="Event Work" value="<%= userEdit.work %>"/>
+        </label>
+        </div>
+      <div class="mt-2">
+        <label class="block text-sm">
+          <span class="text-gray-700 dark:text-gray-400">Education</span>
+          <input name="education"
+            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+            placeholder="Event Education" value="<%= userEdit.education %>"/>
+        </label>
+        </div>
+     
+        
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Gender</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="gender" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+              <option>Select Gender</option>
+              <option value="Man">Man</option>
+              <option value="Woman">Woman</option>
+              <option value="Trans-Man">Trans-Man</option>
+              <option value="Trans-Woman">Trans-Woman</option>
+          </select>
+        </div>
+      </label>
+    </div>
+
+     
+
+    <!-- gender -->
+    <h3 style="margin: 15px 0px;"><b>More about me</b></h3>
+
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Height</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="height" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Height</option>
+            <% for (let feet = 4; feet <= 8; feet++) { %> <!-- Loop for feet -->
+                <% for (let inches = 0; inches <= 11; inches++) { %> <!-- Loop for inches -->
+                    <option value="<%= `${feet}'${inches}` %>">
+                        <%= `${feet}'${inches}` %>
+                    </option>
+                <% } %>
+            <% } %>
+          </select>
+        </div>
+      </label>
+    </div>
+
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Exercise</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="exercise" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Exercise</option>
+            <option value="Never">Never</option>        
+            <option value="Rarely">Rarely</option>        
+            <option value="Sometimes">Sometimes</option>        
+            <option value="Regularly">Regularly</option>        
+            <option value="Daily">Daily</option>        
+            <option value="Multiple times per day">Multiple times per day</option>        
+            <option value="Professional athlete">Professional athlete</option>        
+          </select>
+        </div>
+      </label>
+    </div>
+    
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Education Level</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="education_level" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Education Level</option>
+            <option value="Some high school">Some high school</option>
+            <option value="High school diploma">High school diploma</option>
+            <option value="Some college">Some college</option>
+            <option value="Associate\'s degree">Associate\'s degree</option>
+            <option value="Bachelor\'s degree">Bachelor\'s degree</option>
+            <option value="Master\'s degree">Master\'s degree</option>
+            <option value="Doctorate">Doctorate</option>
+            <option value="Professional degree (e.g. MD, JD)">Professional degree (e.g. MD, JD)</option>
+            <option value="Trade school">Trade school</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+      </label>
+    </div>
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Language</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="language[]" multiple  id="multiLanguageSelect"
+            class="w-full mt-1 text-sm">
+            <option value=""  hidden>Select Language</option>
+            <option value="English">English</option>
+            <option value="French">French</option>
+            <option value="Spanish">Spanish</option>
+            <option value="Arabic">Arabic</option>
+            <option value="German">German</option>
+            <option value="Greek">Greek</option>
+            <option value="Italian">Italian</option>
+            <option value="Dutch">Dutch</option>
+            <option value="Portuguese">Portuguese</option>
+            <option value="Mandarin Chinese'">Mandarin Chinese'</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Russian">Russian</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Korean">Korean</option>
+            <option value="Vietnamese">Vietnamese</option>
+            <option value="Turkish">Turkish</option>
+          </select>
+        </div>
+      </label>
+    </div>
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Smoking</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="smoking" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Smoking</option>
+            <option value="Never smoker">Never smoker</option>
+            <option value="Non-smoker">Non-smoker</option>
+            <option value="Social smoker">Social smoker</option>
+            <option value="Regular smoker">Regular smoker</option>
+            <option value="Former smoker">Former smoker</option>
+            <option value="Vaper">Vaper</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+      </label>
+    </div>
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Drinking</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="drinking" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Drinking</option>
+            <option value="Non-drinker">Non-drinker</option>
+            <option value="Rarely drink">Rarely drink</option>
+            <option value="Social drinker">Social drinker</option>
+            <option value="Regular drinker">Regular drinker</option>
+            <option value="Recovering alcoholic">Recovering alcoholic</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+      </label>
+    </div>
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Ethnicity</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="ethnicity" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Ethnicity</option>
+            <option value="White/Caucasian">White/Caucasian</option>
+            <option value="Black/African American">Black/African American</option>
+            <option value="Hispanic/Latino">Hispanic/Latino</option>
+            <option value="Asian">Asian</option>
+            <option value="Middle Eastern">Middle Eastern</option>
+            <option value="Native American/Indigenous">Native American/Indigenous</option>
+            <option value="Pacific Islander">Pacific Islander</option>
+            <option value="Mixed/Multiracial">Mixed/Multiracial</option>
+            <option value="Other (with option to specify)">Other (with option to specify)</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+      </label>
+    </div>
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Horoscope</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="horoscope" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Horoscope</option>
+            <option value="Aries (March 21 - April 19)">Aries (March 21 - April 19)</option>
+            <option value="Taurus (April 20 - May 20)">Taurus (April 20 - May 20)</option>
+            <option value="Gemini (May 21 - June 20)">Gemini (May 21 - June 20)</option>
+            <option value="Cancer (June 21 - July 22)">Cancer (June 21 - July 22)</option>
+            <option value="Leo (July 23 - August 22)">Leo (July 23 - August 22)</option>
+            <option value="Virgo (August 23 - September 22)">Virgo (August 23 - September 22)</option>
+            <option value="Libra (September 23 - October 22)">Libra (September 23 - October 22)</option>
+            <option value="Scorpio (October 23 - November 21)">Scorpio (October 23 - November 21)</option>
+            <option value="Sagittarius (November 22 - December 21)">Sagittarius (November 22 - December 21)</option>
+            <option value="Capricorn (December 22 - January 19)">Capricorn (December 22 - January 19)</option>
+            <option value="Aquarius (January 20 - February 18)">Aquarius (January 20 - February 18)</option>
+            <option value="Pisces (February 19 - March 20)">Pisces (February 19 - March 20)</option>
+            <option value="Don't believe in astrology">Don't believe in astrology</option>
+          </select>
+        </div>
+      </label>
+    </div>
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Have kids</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="have_kids" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Have kids</option>
+            <option value="No kids">No kids</option>
+            <option value="Wants kids">Wants kids</option>
+            <option value="Have kids and want more">Have kids and want more</option>
+            <option value="Have kids and don't want more">Have kids and don't want more</option>
+            <option value="Don't have kids but want them in the future">Don't have kids but want them in the future</option>
+            <option value="Don't have kids and don't want any">Don't have kids and don't want any</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+      </label>
+    </div>
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Relationship</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="relationship" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Relationship</option>
+            <option value="Single">Single</option>
+            <option value="In a relationship">In a relationship</option>
+            <option value="Married">Married</option>
+            <option value="Divorced">Divorced</option>
+            <option value="Separated">Separated</option>
+            <option value="Widowed">Widowed</option>
+            <option value="It's complicated">It's complicated</option>
+            <option value="In an open relationship">In an open relationship</option>
+            <option value="Polyamorous">Polyamorous</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+      </label>
+    </div>
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">Looking For</span>
+        <!-- focus-within sets the color for the icon when input is focused -->
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select name="looking_for" 
+            class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <option value="" disabled selected>Select Looking For</option>
+            <option value="A Long-Term Relationship">A Long-Term Relationship</option>
+            <option value="Fun Casual Dates">Fun Casual Dates</option>
+            <option value="Open to short term">Open to short term</option>
+            <option value="Humor">Humor</option>
+            <option value="Kindness">Kindness</option>
+            <option value="Playfulness">Playfulness</option>
+            <option value="Marriage">Marriage</option>
+            <option value="Intimacy Without Commitment">Intimacy Without Commitment</option>
+            <option value="A Life Partner">A Life Partner</option>
+            <option value="Ethical Non-Monogamy">Ethical Non-Monogamy</option>
+          </select>
+        </div>
+      </label>
+    </div>
+    
+    <div class="mt-2">
+      <label class="block mt-4 text-sm">
+        <span class="text-gray-700 dark:text-gray-400">My Interests</span>
+        <div class="relative text-gray-500 focus-within:text-purple-600 dark:focus-within:text-purple-400">
+          <select id="multiIntrestSelect" name="interests[]" multiple  class="w-full mt-1 text-sm">
+            <option value=""  hidden>Select Your Interests</option> <!-- Placeholder -->
+            <option value="Art">Art</option>
+            <option value="Foodie">Foodie</option>
+            <option value="Makeup">Makeup</option>
+            <option value="Traveling">Traveling</option>
+            <option value="Music">Music</option>
+            <option value="Reading">Reading</option>
+            <option value="Fitness">Fitness</option>
+            <option value="Dancing">Dancing</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Photography">Photography</option>
+            <option value="Cooking">Cooking</option>
+            <option value="Hiking">Hiking</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Sports">Sports</option>
+            <option value="Tech">Tech</option>
+            <option value="Writing">Writing</option>
+            <option value="Yoga">Yoga</option>
+            <option value="Movies">Movies</option>
+            <option value="Swimming">Swimming</option>
+            <option value="Socializing">Socializing</option>
+            <option value="Gardening">Gardening</option>
+            <option value="Crafting">Crafting</option>
+            <option value="Martial Arts">Martial Arts</option>
+            <option value="Volunteering">Volunteering</option>
+            <option value="Blogging">Blogging</option>
+            <option value="Collecting">Collecting</option>
+            <option value="Board Games">Board Games</option>
+            <option value="Astrology">Astrology</option>
+            <option value="DIY Projects">DIY Projects</option>
+            <option value="Pets">Pets</option>
+          </select>          
+        </div>
+      </label>
+    </div>
+    
+
+  <script>
+    $(document).ready(function() {
+        $('.manage-user-sidebar').each(function() {
+          var spanElement = $('<span class="absolute inset-y-0 left-0 w-1 rounded-tr-lg rounded-br-lg" style="background-color:var(--blue-color);" aria-hidden="true"></span>');
+              $(this).before(spanElement);
+              $(this).addClass('text-gray-800');
+        });
+    });
+  </script>
+  <script>
+    $(document).ready(function () {
+      var type = 'create';
+      $('.submitsByAjax').submit(function (e) {
+        e.preventDefault();
+        
+        var formData = new FormData(this);
+  
+        ajaxCallFormSubmit($(this), false, 'Loading! Please wait...', formData,
+          type === 'create' ? postCreate : undefined);
+      });
+      function postCreate() {
+        switch_between_register_to_registerAnother_btn($('.submitsByAjax'), false);
+      }
+    });
+    
+  </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Choices('#multiLanguageSelect', {
+      removeItemButton: true
+    });
+    new Choices('#multiIntrestSelect', {
+      removeItemButton: true
+    });
+  });
+</script>
+
+ <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const imageGrid = document.getElementById("imageGrid");
+
+            // Handle image upload
+            imageGrid.addEventListener("change", function (event) {
+                if (event.target.type === "file") {
+                    let file = event.target.files[0];
+                    if (file) {
+                        let reader = new FileReader();
+                        reader.onload = function (e) {
+                          let parentDiv = event.target.closest(".image-box");
+                          let index = parentDiv.getAttribute("data-index");
+                          let addButton = parentDiv.querySelector(".add-btn");
+                          if (addButton) {
+                              addButton.style.display = "none"; // Hide the button
+                          }
+                          let newImg = document.createElement("img");
+                            newImg.src = e.target.result;
+                            parentDiv.appendChild(newImg);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+
+            // Handle remove button click
+            imageGrid.addEventListener("click", function (event) {
+                if (event.target.classList.contains("remove-btn")) {
+                    let parentDiv = event.target.closest(".image-box");
+                    let index = parentDiv.getAttribute("data-index");
+                    parentDiv.innerHTML = `
+                        <label for="file${index}" class="add-btn">+</label>
+                        <input type="file" id="file${index}" accept="image/*">
+                    `;
+                }
+            });
+        });
+    </script>
+
+    
+<script>
+  function initAutocomplete() {
+    const hometownInput = document.getElementById('hometown');
+    const latitudeInput = document.getElementById('latitude');
+    const longitudeInput = document.getElementById('longitude');
+
+    if (!hometownInput || !latitudeInput || !longitudeInput) {
+      console.error("One or more input fields are missing.");
+      return;
+    }
+
+    const autocomplete = new google.maps.places.Autocomplete(hometownInput, {
+      types: ['(cities)']  // Restrict search to cities
+    });
+
+    autocomplete.addListener('place_changed', function () {
+      const place = autocomplete.getPlace();
+      if (place.geometry) {
+        latitudeInput.value = place.geometry.location.lat();
+        longitudeInput.value = place.geometry.location.lng();
+      } else {
+        console.error('Place details are unavailable.');
+      }
+    });
+  }
+</script>
+<!-- <script
+  src="https://maps.googleapis.com/maps/api/js?key=''&libraries=places&callback=initAutocomplete"></script> -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRNjykxoRKwqenOpoqBdoYz1CTvPYI5So&libraries=places&callback=initAutocomplete"></script>

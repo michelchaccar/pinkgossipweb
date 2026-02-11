@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+  <head>
+    <%- include('../include/_head') %>
+  </head>
+  <body>
+    <div class="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
+      <div
+        class="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800"
+      >
+       <div class="flex flex-col overflow-y-auto md:flex-row" >
+           <div class="h-32 md:h-auto md:w-1/2" style="padding: 20px;">
+            <a href="https://play.google.com/store/apps/details?id=com.app.pinkgossip&hl=en_IN"><img
+              aria-hidden="true"
+              class="object-contain w-full h-full dark:hidden"
+              src="/img/play.png"
+              alt="Office"
+            /></a>
+             <a href="https://play.google.com/store/apps/details?id=com.app.pinkgossip&hl=en_IN"><img
+              aria-hidden="true"
+              class="hidden object-contain w-full h-full dark:block"
+              src="/img/play.jpeg"
+              alt="Office"
+            /></a>
+          </div>
+          <div class="h-32 md:h-auto md:w-1/2" style="padding: 20px;">
+            <a href="https://apps.apple.com/in/app/pink-gossip/id6670591697"> <img
+              aria-hidden="true"
+              class="object-contain w-full h-full dark:hidden"
+              src="/img/apple.png"
+              alt="Office"
+            /></a>
+            <a href="https://apps.apple.com/in/app/pink-gossip/id6670591697"> <img
+              aria-hidden="true"
+              class="hidden object-contain w-full h-full dark:block"
+              src="/img/apple.jpeg"
+              alt="Office"
+            /></a>
+          </div>
+      </div>
+        <div class="flex flex-col overflow-y-auto md:flex-row">
+          <div class="flex h-32 md:h-auto md:w-1/2 justify-center items-center">
+            <img
+              aria-hidden="true"
+              class="dark:hidden"
+              src="/img/logo.png"
+              alt="Logo"
+            />
+          </div>
+          <div class="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
+            <div class="w-full">
+             
+              <h1
+                class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200"
+              >
+               
+              </h1>
+              <label class="block text-sm">
+                <span class="text-gray-700 dark:text-gray-400">  Download App From Apple Store and Play Store</span>
+                
+              </label>
+              <label class="block mt-4 text-sm">
+                <span class="text-gray-700 dark:text-gray-400"></span>
+               
+              </label>
+
+              <!-- You should use a button here, as the anchor is only used for the example  -->
+             
+
+              <hr class="my-8" />
+
+              <p class="mt-4">
+               
+              </p>              
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        var type = 'create';
+        $('.submitsByAjax').submit(function (e) {
+             e.preventDefault();
+             var dataToPass = $(this).serialize();
+
+             ajaxCallFormSubmit($(this), false, 'Loading! Please wait...', dataToPass,
+                 type === 'create' ? postCreate : undefined);
+         });
+         function postCreate() {
+             switch_between_register_to_registerAnother_btn($('.submitsByAjax'), false);
+         }
+     });
+       </script>
+
+    <%- include('../include/_footer') %>
+  </body>
+</html>

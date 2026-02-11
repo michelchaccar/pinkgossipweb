@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Gossip - Beauty Salon Discovery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FBE3E6',
+                        secondary: '#fce7f3',
+                        'pink-primary': '#FBE3E6',
+                        'pink-secondary': '#fce7f3',
+                        'pink-accent': '#EC1F95',
+                        'black-secondary': '#22222C',
+                        'color-secondary': '#717171',
+                        'color-gray-2': '#2C2C2C',
+                        'underline-color': '#EBEBEB',
+                        'input-border': '#D0D0D0'
+                    },
+                    fontFamily: {
+                        'sans': ['Roboto', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Italiana&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-to-br from-pink-50 to-white font-sans">
+    <!-- Top Navigation -->
+     <%- include('../../include/_webheader', { session: session }) %>
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto min-h-screen">
+        <!-- Main Content -->
+        <div class="flex gap-8 p-6">
+            <!-- Sidebar -->
+            <aside class="hidden lg:block w-80 space-y-6">
+                <!-- About Card -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">About Pink Gossip</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Pink Gossip is your go-to platform for discovering
+                        the best beauty salons, reading customer reviews, and sharing beauty content. Join us today to
+                        explore a world of beauty!</p>
+                </div>
+
+                <!-- Trending Salons -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Trending Salons</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                                <span class="text-pink-600 text-sm">💄</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Glamour Studio</p>
+                                <p class="text-xs text-gray-500 flex">4.9 <img src="/img/full_star.svg"
+                                        class="mr-2 ml-1">
+                                    •
+                                    234 reviews
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                                <span class="text-pink-600 text-sm">✨</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Beauty Bliss</p>
+                                <p class="text-xs text-gray-500 flex">4.8 <img src="/img/full_star.svg"
+                                        class="mr-2 ml-1">
+                                    • 189 reviews</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                                <span class="text-pink-600 text-sm">💅</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Chic Salon</p>
+                                <p class="text-xs text-gray-500 flex">4.7 <img src="/img/full_star.svg"
+                                        class="mr-2 ml-1"> • 156 reviews</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Feed -->
+            <main class="flex-1 mx-auto space-y-6">
+              <div id="feedContainer" class="space-y-6"></div>
+              <div id="loadMoreContainer" class="text-center mt-8">
+                <button id="loadMoreBtn"
+                  class="bg-white hover:bg-gray-50 text-gray-700 px-8 py-3 rounded-xl font-medium border border-gray-200 transition-colors">
+                  Load More Posts
+                </button>
+              </div>
+            </main>
+        </div>
+    </div>
+    <!-- Comments Popup -->
+<div id="commentsModal"
+     class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+  <div class="bg-white w-[90%] md:w-[60%] rounded-2xl shadow-xl max-h-[85%] overflow-hidden flex flex-col">
+    
+    <!-- Header -->
+    <div class="flex justify-between items-center p-4 border-b">
+      <h2 class="text-xl font-semibold">Comments</h2>
+      <button onclick="closeComments()" class="text-gray-500 text-xl">✕</button>
+    </div>
+
+    <!-- Comments List -->
+    <div id="commentsList" class="flex-1 overflow-y-auto p-4 space-y-4">
+      <!-- Comments injected dynamically -->
+    </div>
+
+    <!-- Input -->
+    <div class="p-3 border-t flex items-center gap-2">
+      <input id="commentInput" 
+             type="text"
+             class="flex-1 border rounded-full px-4 py-2 text-sm"
+             placeholder="send comment">
+      <button onclick="sendComment()" 
+              class="bg-pink-500 text-white px-4 py-2 rounded-full">
+        ➤
+      </button>
+    </div>
+
+  </div>
+</div>
+
+ <!-- share Modal Popup -->
+<div id="shareModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+  <div class="bg-white rounded-2xl w-[95%] md:w-3/4 lg:w-1/2 max-h-[86vh] overflow-hidden flex flex-col">
+    <!-- header -->
+    <div class="p-4 border-b flex items-center justify-between">
+      <h3 class="text-lg font-semibold">Send post to</h3>
+      <button onclick="closeShareModal()" class="text-gray-500">✕</button>
+    </div>
+
+    <!-- users grid -->
+    <div id="shareUsersContainer" class="p-6 overflow-auto">
+      <div id="shareUsersGrid" class="grid grid-cols-3 gap-6 items-start"></div>
+    </div>
+
+    <!-- footer -->
+    <div class="p-4 border-t">
+      <div class="flex items-center gap-4">
+        <div class="flex-1 text-sm text-gray-600" id="shareCount">0 selected</div>
+        <button id="sendShareBtn" class="bg-blue-500 text-white px-6 py-2 rounded-full">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+
+<!--       Message share post               -->
+
+
+<script>
+/* ----------------------------------------
+  Firebase + Share Modal for posts
+  Paste only once. If you already loaded firebase in page,
+  the init will be harmless (firebase.initializeApp will be ignored if already initialized).
+-----------------------------------------*/
+
+(function(){
+  // Firebase config (same as message.ejs)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCDOxbU-HdqCfeoSeSN6mOHr27bqXE1ExQ",
+    authDomain: "pinkgossip-936f9.firebaseapp.com",
+    databaseURL: "https://pinkgossip-936f9-default-rtdb.firebaseio.com",
+    projectId: "pinkgossip-936f9",
+    storageBucket: "pinkgossip-936f9.firebasestorage.app",
+    messagingSenderId: "802780236204",
+    appId: "1:802780236204:web:faeeba5f2bd8d83b245209"
+  };
+
+  // load Firebase scripts if not present
+  function ensureFirebaseLoaded() {
+    return new Promise((resolve) => {
+      if (window.firebase && firebase.database) return resolve();
+
+      const s1 = document.createElement('script');
+      s1.src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js";
+      s1.onload = () => {
+        const s2 = document.createElement('script');
+        s2.src = "https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js";
+        s2.onload = () => resolve();
+        document.head.appendChild(s2);
+      };
+      document.head.appendChild(s1);
+    });
+  }
+
+  // init
+  let db = null;
+  function initFirebase() {
+    try {
+      if (!window.firebase || !firebase.apps || Object.keys(firebase.apps).length === 0) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      db = firebase.database();
+    } catch (e) {
+      // already initialized or error
+      db = firebase.database();
+    }
+  }
+
+  // helper to create deterministic chat key used by your message system
+  function makeChatKey(a, b){
+    const a1 = String(a || '').replace(/^-/, '');
+    const b1 = String(b || '').replace(/^-/, '');
+    // ensure stable ordering
+    if (a1 < b1) return `chat--${a1}--${b1}`;
+    return `chat--${b1}--${a1}`;
+  }
+
+  // get sender firebase id from server session (EJS)
+  const senderId = "<%= typeof session.user.firebase_id !== 'undefined' ? session.user.firebase_id : '' %>";
+  const currentUserName = "<%= session.user.first_name %> <%= session.user.last_name %>";
+  const currentUserPhoto = "<%= session.user.profile_image ? '/api/' + encodeURIComponent(session.user.profile_image) : '/img/jane-done.png' %>";
+
+  // UI refs
+  const shareModal = document.getElementById('shareModal');
+  const shareUsersGrid = document.getElementById('shareUsersGrid');
+  const shareCountEl = document.getElementById('shareCount');
+  const sendShareBtn = document.getElementById('sendShareBtn');
+
+  // state
+  let sharePostPayload = null;    // the full post JSON to send (object)
+  let usersCache = {};            // firebase users from /users
+  let chatList = {};              // chat entries from /message that include sender
+  let selectableUsers = [];       // merged user objects with chatKey
+  let selected = new Set();
+
+  // Open modal from feed: call openShareModal(postObject)
+  window.openShareModal = async function(postObj){
+    sharePostPayload = postObj;
+    await ensureFirebaseLoaded();
+    initFirebase();
+    await loadAllUsers();        // fills usersCache
+    await loadChatList();        // fills chatList (only chats that include sender)
+    buildSelectableUsers();      // create selectableUsers array
+    renderShareUsers();          // render UI
+    selected.clear();
+    updateShareCount();
+    shareModal.classList.remove('hidden');
+  };
+
+  window.closeShareModal = function(){
+    shareModal.classList.add('hidden');
+  };
+
+  // Load /users once (same as message.ejs)
+  async function loadAllUsers(){
+    try {
+      const snap = await db.ref('users').once('value');
+      usersCache = snap.val() || {};
+    } catch (e) {
+      console.error('Failed to load users', e);
+      usersCache = {};
+    }
+  }
+
+  // Load /message and compute chatList (only keys that include senderId)
+  async function loadChatList(){
+    try {
+      const snap = await db.ref('message').once('value');
+      const all = snap.val() || {};
+      chatList = {};
+      Object.keys(all).forEach(chatKey => {
+        if (!chatKey.startsWith('chat--')) return;
+        if (!chatKey.includes(senderId.replace(/^-/, ''))) {
+          // also try match with removed leading '-' variants
+          if (!chatKey.includes(senderId)) return;
+        }
+
+        // compute other user id from key
+        const parts = chatKey.split('--');
+        if (parts.length < 3) return;
+        const a = parts[1]; const b = parts[2];
+
+        // original code stored user ids maybe with leading -, try to match
+        let other = null;
+        const prepA = '-' + a;
+        const prepB = '-' + b;
+        if (prepA === senderId) other = prepB;
+        else if (prepB === senderId) other = prepA;
+        else {
+          // fallback: if senderId contains no leading -, check plain
+          if (a === senderId.replace(/^-/, '')) other = (b.startsWith('-') ? b : ('-' + b));
+          if (b === senderId.replace(/^-/, '')) other = (a.startsWith('-') ? a : ('-' + a));
+        }
+        if (!other) {
+          // if still not found, try naive inference: take the id that's not equal to senderId (plain)
+          other = (a === senderId || a === senderId.replace(/^-/, '')) ? (b) : (a);
+          // prefix with '-' if message keys originally had '-' in message.ejs usage
+          if (!other.startsWith('-')) other = '-' + other;
+        }
+
+        // gather last text + ts + unread
+        const msgs = all[chatKey] || {};
+        let lastTs = 0, lastText = '', unread = 0;
+        Object.keys(msgs).forEach(k => {
+          const m = msgs[k];
+          const ts = m.timestamp || parseInt(k) || 0;
+          if (ts > lastTs) { lastTs = ts; lastText = m.content || m.msg || ''; }
+          if (m.idTo === senderId && (m.isSeen !== true && m.isSeen !== 'true')) unread++;
+        });
+
+        chatList[chatKey] = { chatKey, other, lastText, lastTs, unread };
+      });
+    } catch (e) {
+      console.error('Failed to load messages', e);
+      chatList = {};
+    }
+  }
+
+  // Merge chatList + usersCache to build selectableUsers
+  function buildSelectableUsers(){
+    selectableUsers = [];
+    Object.values(chatList).forEach(ch => {
+      const otherId = ch.other;
+      // usersCache keys might be plain firebase ids (without -) or with -, so try both
+      const plainId = String(otherId).replace(/^-/, '');
+      const userObj = usersCache[plainId] || usersCache[otherId] || {};
+      selectableUsers.push({
+        chatKey: ch.chatKey,
+        otherId: otherId,
+        lastText: ch.lastText,
+        lastTs: ch.lastTs,
+        unread: ch.unread,
+        user: userObj
+      });
+    });
+
+    // Sort by lastTs desc
+    selectableUsers.sort((a,b)=> (b.lastTs||0) - (a.lastTs||0));
+  }
+
+  // Render grid UI
+  function renderShareUsers(){
+    shareUsersGrid.innerHTML = '';
+    if (selectableUsers.length === 0) {
+      shareUsersGrid.innerHTML = '<div class="col-span-3 text-center text-gray-500">No conversations found</div>';
+      return;
+    }
+
+    selectableUsers.forEach(u => {
+      // user fields
+      const user = u.user || {};
+      const nickname = user.nickname || (user.first_name ? (user.first_name + (user.last_name ? (' ' + user.last_name) : '')) : (u.otherId));
+      const avatar = (user.photoUrl ? ("/api/" + encodeURIComponent(user.photoUrl)) : (user.photo || user.avatar || "/img/jane-done.png"));
+      const otherId = u.otherId;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'flex flex-col items-center text-center';
+
+      wrap.innerHTML = `
+        <div class="relative">
+          <div class="w-20 h-20 rounded-full bg-slate-100 overflow-hidden flex items-center justify-center">
+            <img src="${avatar}" class="w-full h-full object-cover"/>
+          </div>
+
+          <button class="absolute -right-1 -bottom-1 w-6 h-6 rounded-full bg-white flex items-center justify-center border select-checkbox" data-other="${otherId}" aria-checked="false" title="Select">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="check-svg opacity-0">
+              <path d="M20 6L9 17l-5-5" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="mt-3 text-xs text-gray-700 break-words">${escapeHtml(nickname)}</div>
+      `;
+
+      shareUsersGrid.appendChild(wrap);
+
+      // checkbox click handler
+      wrap.querySelector('.select-checkbox').addEventListener('click', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        const btn = this;
+        const other = btn.getAttribute('data-other');
+        const svg = btn.querySelector('.check-svg');
+        const checked = btn.getAttribute('aria-checked') === 'true';
+        if (!checked) {
+          btn.setAttribute('aria-checked','true');
+          svg.style.opacity = 1;
+          selected.add(other);
+        } else {
+          btn.setAttribute('aria-checked','false');
+          svg.style.opacity = 0;
+          selected.delete(other);
+        }
+        updateShareCount();
+      });
+
+    });
+  }
+
+  function updateShareCount(){
+    shareCountEl.innerText = `${selected.size} selected`;
+    sendShareBtn.disabled = selected.size === 0;
+    sendShareBtn.classList.toggle('opacity-50', selected.size === 0);
+  }
+
+  // Escape helper
+  function escapeHtml(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // Send post JSON as RAW text to each selected user
+  sendShareBtn.addEventListener('click', async function(){
+    if (selected.size === 0) return alert('Select at least one user');
+    if (!sharePostPayload) return alert('No post selected');
+
+    // raw JSON string to send
+    const rawText = JSON.stringify(sharePostPayload);
+
+    const promises = [];
+    const now = Date.now();
+
+    selected.forEach(otherId => {
+      // compute chatKey with stable ordering (use helper)
+      const chatKey = makeChatKey(senderId, otherId);
+
+      // unique timestamp key
+      const ts = String(Date.now() + Math.floor(Math.random() * 1000));
+      const msgObj = {
+        content: rawText,
+        idFrom: senderId,
+        idTo: otherId,
+        timestamp: Number(ts),
+        type: 2,      // you can pick type code (2 => shared post)
+        isSeen: false
+      };
+
+      const p = db.ref('message').child(chatKey).child(ts).set(msgObj).catch(e => {
+        console.error('Failed to send to', otherId, e);
+      });
+
+      promises.push(p);
+    });
+
+    try {
+      await Promise.all(promises);
+      alert('Post sent.');
+      closeShareModal();
+      selected.clear();
+      updateShareCount();
+    } catch (e) {
+      console.error(e);
+      alert('Some messages failed to send.');
+    }
+  });
+
+  // expose helper to feed post UI buttons
+  // You already have per-post code; modify the send button handler to call openShareModal(post)
+  // Example usage from your existing renderPost: <button onclick='openShareModal(${JSON.stringify(post)})'>Send</button>
+  // If post contains double-quotes or special chars, make sure it's passed as object, not string.
+
+  // OPTIONAL: auto-close modal when clicking outside the modal box
+  shareModal.addEventListener('click', function(e){
+    if (e.target === shareModal) closeShareModal();
+  });
+
+})();
+</script>
+<!--       Message share post               -->
+<script>
+(() => {
+
+  /* ----------------------------------------
+     CONFIG
+  ---------------------------------------- */
+  const userId = <%= session.user.id %>; // replace or make dynamic using EJS
+  const apiBase = "<%= BASE_URL %>/api/other-user-post";
+
+  let offcet = 0;       // API offset starting at 0
+  const limit = 10;     // your backend returns 10 posts per request
+  let totalPosts = null;
+  let loading = false;
+  let noMore = false;
+
+  const feedContainer = document.getElementById("feedContainer");
+  const loadMoreBtn   = document.getElementById("loadMoreBtn");
+
+
+  /* ----------------------------------------
+     HELPERS
+  ---------------------------------------- */
+  function safe(v, fallback = '') {
+    return (v === null || v === undefined) ? fallback : v;
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso);
+      return d.toLocaleString();
+    } catch (e) {
+      return iso;
+    }
+  }
+
+  function mediaUrl(path) {
+    if (!path) return null;
+    path = String(path).trim();
+    if (path === "") return null;
+
+    if (path.startsWith("http") || path.startsWith("/")) return path;
+
+    return "/api/" + encodeURI(path);
+  }
+
+  function isVideo(file) {
+    if (!file) return false;
+    const f = file.toLowerCase();
+    return f.endsWith(".mp4") || f.endsWith(".webm") || f.endsWith(".mov");
+  }
+
+
+  /* ----------------------------------------
+     BUILD MEDIA BLOCK
+  ---------------------------------------- */
+  function buildMediaHTML(post) {
+    const multi = Array.isArray(post.other_multi_Post) ? post.other_multi_Post : [];
+
+    if (multi.length > 0) {
+      const items = multi.slice(0, 2).map(it => {
+        const url = mediaUrl(it.other_data);
+        if (!url)
+          return `<div class="bg-gray-100 h-48 flex items-center justify-center text-gray-400">No media</div>`;
+
+        if (isVideo(url))
+          return `<video controls class="w-full h-auto object-cover max-h-[420px]"><source src="${url}"></video>`;
+
+        return `<img src="${url}" class="w-full h-auto object-cover" />`;
+      });
+
+      if (items.length === 1)
+        return `<div class="grid grid-cols-1 gap-1">${items[0]}</div>`;
+
+      return `<div class="grid grid-cols-2 gap-1">${items.join("")}</div>`;
+    }
+
+    // fallback before/after
+    const before = mediaUrl(post.before_image);
+    const after  = mediaUrl(post.after_image);
+
+    if (before || after) {
+      const left = before
+        ? (isVideo(before)
+            ? `<video controls class="w-full h-auto object-cover"><source src="${before}"></video>`
+            : `<img src="${before}" class="w-full h-auto object-cover" />`)
+        : `<div class="bg-gray-100 h-48"></div>`;
+
+      const right = after
+        ? (isVideo(after)
+            ? `<video controls class="w-full h-auto object-cover"><source src="${after}"></video>`
+            : `<img src="${after}" class="w-full h-auto object-cover" />`)
+        : `<div class="bg-gray-100 h-48"></div>`;
+
+      return `<div class="grid grid-cols-2 gap-1">${left}${right}</div>`;
+    }
+
+    return `<div class="bg-gray-100 h-48 flex items-center justify-center text-gray-400">No media</div>`;
+  }
+
+
+  /* ----------------------------------------
+     RENDER POST
+  ---------------------------------------- */
+  function renderPost(p) {
+    const profile = mediaUrl(p.profile_image) || "/img/jane-done.png";
+    const userName = safe(p.user_name || (p.first_name + " " + (p.last_name || "")).trim(), "Unknown");
+    const salonName = safe(p.salon_name || "");
+    const rating = Number(p.rating || p.average_rating || 0);
+    const likes  = Number(p.like_count || 0);
+    const comments = Number(p.comment_count || 0);
+    const created = formatDate(p.created_at);
+
+    // rating stars
+    const fullStars = Math.floor(rating);
+    const half = (rating - fullStars >= 0.5);
+    let starsHTML = "";
+    for (let i = 0; i < fullStars; i++) starsHTML += `<img src="/img/full_star.svg" class="inline-block w-3 h-3"/>`;
+    if (half) starsHTML += `<img src="/img/half_star.svg" class="inline-block w-3 h-3"/>`;
+
+    const mediaHTML = buildMediaHTML(p);
+    const caption = safe(p.review || "");
+
+   const html = `
+<article class="bg-white rounded-2xl shadow-lg overflow-hidden relative">
+
+  <div class="flex items-center justify-between p-4">
+    <div class="flex items-center space-x-3">
+      <img src="${profile}" class="w-12 h-12 rounded-full object-cover"/>
+      <div>
+        <h3 class="font-semibold text-gray-900">${userName}</h3>
+        <p class="text-sm text-gray-400">${salonName}</p>
+        <div class="flex items-center space-x-1 mt-1">
+          ${rating ? `<span class="text-sm text-gray-400">${rating.toFixed(1)}</span>` : ""}
+          <div class="flex space-x-1">${starsHTML}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3-DOT MENU BUTTON -->
+    <button class="menu-btn p-2 text-gray-400" data-post-id="${p.id}">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+      </svg>
+    </button>
+
+    <!-- DROP DOWN MENU -->
+    <div class="post-menu hidden absolute right-4 top-14 bg-white shadow-xl rounded-xl w-40 py-2 z-50">
+      <button class="menu-download block w-full text-left px-4 py-2 hover:bg-gray-100">Download</button>
+      <!--<button class="menu-share block w-full text-left px-4 py-2 hover:bg-gray-100">Share</button> -->
+      <button class="menu-report block w-full text-left px-4 py-2 hover:bg-gray-100" data-post-id="${p.id}">Report</button>
+      <button class="menu-block block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600" data-block-user="${p.user_id}">Block</button>
+    </div>
+
+  </div>
+
+  <div class="post-media">
+  ${mediaHTML}
+</div>
+
+  <!-- Interaction Buttons -->
+  <div class="flex items-center justify-start space-x-4 p-4">
+
+    <!-- HEART -->
+  <button 
+  class="post-like-btn flex items-center justify-center w-12 h-12 rounded-full transition-colors group"
+  data-post-id="${p.id}"
+  data-liked="${p.like ? 1 : 0}"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" 
+       width="24" height="21.071" 
+       viewBox="0 0 24 21.071"
+       class="w-6 h-6">
+
+    <path
+      d="M13,22.855C18.5,19.139,24,15,24,9.5a5.5,5.5,0,0,0-9.389-3.889L13,7.22,11.389,5.609A5.5,5.5,0,0,0,2,9.5C2,15,7.5,19.139,13,22.855Z"
+      transform="translate(-1 -2.991)"
+      fill="none"
+      stroke="${p.like ? '#e11d48' : '#22222c'}"
+      stroke-width="2"
+      class="heart-path"
+    />
+
+  </svg>
+</button>
+
+
+
+    <!-- COMMENT -->
+    <button onclick='openComments(${p.id}, ${JSON.stringify(p.comments || [])})' class="flex items-center justify-center w-12 h-12 rounded-full transition-colors group">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-10 -5 86 45">
+                                <defs>
+                                    <style>
+                                        .cls-1 {
+                                            fill: none;
+                                            stroke: #000;
+                                            stroke-linecap: round;
+                                            stroke-linejoin: round;
+                                            stroke-width: 3px;
+                                        }
+                                    </style>
+                                </defs>
+                                <g id="Layer_2" data-name="Layer 2">
+                                    <g id="Layer_1-2" data-name="Layer 1">
+                                        <path class="cls-1 group-hover:stroke-red-500"
+                                            d="M6.75,23.9s18.28-3,23.1-.4c4.24,2.3,8.17-.07,9.06-.67a1.85,1.85,0,0,1,.45-.21c1.52-.39,9.36-2.14,19.62,1.28,0,0-10.85-3.41-14.46-6-3.19-2.3-8.24-2.73-10.23-1.57a1.46,1.46,0,0,1-1.47,0,8.71,8.71,0,0,0-8.59-.05C19,19.08,13,23.5,6.75,23.9Z" />
+                                        <path class="cls-1 group-hover:stroke-red-500"
+                                            d="M1.19,24.45a1.52,1.52,0,0,0,.14,1.68C3.76,29.17,13.7,39.66,34.67,39c20.61-.67,28.72-10.15,30.78-13.15a1.5,1.5,0,0,0,0-1.73L55.79,10.48l0-.06C55.37,9.82,49-.11,39.63,1.35a1.43,1.43,0,0,0-.59.23c-1.11.73-5.71,3.43-9.39.63s-10.77.27-12,.9a1.37,1.37,0,0,0-.37.26A92.44,92.44,0,0,0,1.19,24.45Z" />
+                                    </g>
+                                </g>
+                            </svg>
+                        </button>
+
+    <!-- SEND -->
+    <button onclick='openShareModal(${JSON.stringify(p)})' class="flex items-center justify-center w-12 h-12 rounded-full transition-colors group">
+      <svg xmlns="http://www.w3.org/2000/svg" width="23.5" height="22.937"
+          viewBox="0 0 23.5 22.937" class="w-6 h-6">
+        <path
+          d="M6.567,13.843,3.269,3.126a72.183,72.183,0,0,1,22,10.717,72.186,72.186,0,0,1-22,10.72l3.3-10.72Zm0,0h9.058"
+          transform="translate(-2.519 -2.376)" fill="none" stroke="#000"
+          stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          class="group-hover:stroke-red-500" />
+      </svg>
+    </button>
+
+  </div>
+
+  <div class="px-4 pb-4">
+    <p class="text-sm text-gray-600 mb-2">
+      <span class="font-semibold text-gray-800">${likes} likes</span>
+    </p>
+
+    <p class="text-sm text-gray-600 mb-3">
+      <span class="font-semibold text-gray-900">${userName}</span> ${caption}
+    </p>
+
+    <p class="text-sm text-gray-400">(${comments}) comments</p>
+    <p class="text-xs text-gray-400">${created}</p>
+  </div>
+
+</article>
+`;
+
+    const wrap = document.createElement("div");
+    wrap.innerHTML = html;
+    feedContainer.appendChild(wrap.firstElementChild);
+  }
+
+
+  /* ----------------------------------------
+     FETCH POSTS (WITH CORRECT OFFSET)
+  ---------------------------------------- */
+  async function fetchPosts() {
+    if (loading || noMore) return;
+    loading = true;
+
+    loadMoreBtn.textContent = "Loading...";
+    loadMoreBtn.disabled = true;
+
+    const url = `${apiBase}/${userId}?offset=${offcet}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (totalPosts === null) {
+        totalPosts = Number(data.post_count || 0);
+      }
+
+      const posts = Array.isArray(data.other_user_post) ? data.other_user_post : [];
+
+      if (posts.length === 0) {
+        noMore = true;
+        loadMoreBtn.textContent = "No more posts";
+        return;
+      }
+
+      posts.forEach(p => renderPost(p));
+
+      // Increase offset by 10
+      offcet += limit;
+
+      // Stop if finished
+      if (offcet >= totalPosts) {
+        noMore = true;
+        loadMoreBtn.textContent = "No more posts";
+        loadMoreBtn.disabled = true;
+      } else {
+        loadMoreBtn.textContent = "Load More Posts";
+        loadMoreBtn.disabled = false;
+      }
+
+    } catch (err) {
+      console.error("Error:", err);
+      loadMoreBtn.textContent = "Failed — Try Again";
+      loadMoreBtn.disabled = false;
+    }
+
+    loading = false;
+  }
+
+
+  /* ----------------------------------------
+     INIT
+  ---------------------------------------- */
+  loadMoreBtn.addEventListener("click", fetchPosts);
+  fetchPosts(); // Load first 10 posts
+
+})();
+</script>
+
+<script>
+document.addEventListener('click', function (e) {
+  // Close menus if clicking outside
+  document.querySelectorAll('.post-menu').forEach(menu => {
+    if (!menu.contains(e.target) && !menu.previousElementSibling.contains(e.target)) {
+      menu.classList.add('hidden');
+    }
+  });
+});
+
+// Toggle dropdown
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('.menu-btn');
+  if (btn) {
+    const article = btn.closest('article');
+    const menu = article.querySelector('.post-menu');
+
+    document.querySelectorAll('.post-menu').forEach(m => m.classList.add('hidden'));
+    menu.classList.toggle('hidden');
+  }
+});
+
+// Download
+// Download Post Media Only
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('menu-download')) {
+    const article = e.target.closest('article');
+
+    // Only fetch media inside post-media
+    const mediaContainer = article.querySelector(".post-media");
+    if (!mediaContainer) return alert("No media found.");
+
+    const media = mediaContainer.querySelector("img, video");
+    if (!media) return alert("No media found.");
+
+    const url = media.src;
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "post_media";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+});
+
+
+// Share
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('menu-share')) {
+    alert("Share options coming next (QR + copy link).");
+  }
+});
+
+// Report
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('menu-report')) {
+    alert("Report API pending.");
+  }
+});
+
+// Block
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('menu-block')) {
+    alert("Block API pending.");
+  }
+});
+</script>
+<script>
+// LIKE API
+document.addEventListener("click", async function (e) {
+  const btn = e.target.closest(".post-like-btn");
+  if (!btn) return;
+
+  const postId = btn.dataset.postId;
+  let isLiked = Number(btn.dataset.liked); // 0 or 1
+
+  // Toggle value
+  const newLike = isLiked === 1 ? 0 : 1;
+
+  const payload = {
+    user_id: <%= session.user.id %>,
+    post_id: postId,
+    like: newLike
+  };
+
+  try {
+    const response = await fetch("/api/post-like", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // UI Update
+      const path = btn.querySelector(".heart-path");
+
+      if (newLike === 1) {
+        path.style.stroke = "#e11d48"; // pink/red
+      } else {
+        path.style.stroke = "#22222c"; // normal
+      }
+
+      btn.dataset.liked = newLike; // update state
+
+ // 🔥 UPDATE LIKE COUNT IN UI
+    const article = btn.closest("article");
+    const likeText = article.querySelector("p span.font-semibold");
+
+    if (likeText) {
+        let currentLikes = parseInt(likeText.innerText) || 0;
+
+        if (newLike === 1) {
+            currentLikes += 1;
+        } else {
+            currentLikes -= 1;
+        }
+
+        // prevent negative number
+        if (currentLikes < 0) currentLikes = 0;
+
+        likeText.innerText = currentLikes + " likes";
+    }
+
+    }
+
+  } catch (err) {
+    console.error("Like API Error:", err);
+  }
+});
+
+document.addEventListener("click", async function (e) {
+  const btn = e.target.closest(".menu-block");
+  if (!btn) return;
+
+  const blockUserId = btn.getAttribute("data-block-user");
+
+  if (!blockUserId) {
+    alert("Invalid user.");
+    return;
+  }
+
+  if (!confirm("Are you sure you want to block this user?")) return;
+
+  const payload = {
+    user_id: <%= session.user.id %>,          // logged-in user
+    block_user_id: blockUserId // the user being blocked
+  };
+
+  try {
+    const response = await fetch("/api/user-block", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert("Blocked successfully.");
+
+      // 🔥 REFRESH THE POSTS, NOT ENTIRE PAGE
+      // If you want FULL reload:
+       location.reload();
+
+      // If you want to reload posts using your existing fetchPosts():
+      // feedContainer.innerHTML = "";  // clear feed
+      // offcet = 0;                     // reset pagination
+      // noMore = false;
+      // fetchPosts();                   // reload fresh feed
+    } else {
+      alert("Failed to block user.");
+    }
+
+  } catch (err) {
+    console.error("Block API error:", err);
+    alert("Something went wrong.");
+  }
+});
+
+document.addEventListener("click", async function (e) {
+  const btn = e.target.closest(".menu-report");
+  if (!btn) return;
+
+  const postId = btn.getAttribute("data-post-id");
+
+  if (!postId) {
+    alert("Invalid post ID.");
+    return;
+  }
+
+  if (!confirm("Are you sure you want to report this post?")) return;
+
+  const payload = {
+    user_id: <%= session.user.id %>,
+    post_id: postId
+  };
+
+  try {
+    const response = await fetch("/api/report-post", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert("Post reported.");
+      location.reload();   // 🔥 refresh page after success
+    } else {
+      alert("Failed to report post. Try again.");
+    }
+
+  } catch (err) {
+    console.error("Report API error:", err);
+    alert("Something went wrong.");
+  }
+});
+
+
+</script>
+
+<script>
+let currentPostId = null;
+let currentUserId = <%= session.user.id %>;  // your logged-in user ID
+
+// Open Modal + load comments
+function openComments(postId, comments) {
+    currentPostId = postId;
+//console.log(comments);
+//console.log(postId);
+    const modal = document.getElementById("commentsModal");
+    const list = document.getElementById("commentsList");
+    list.innerHTML = "";
+
+    if (comments.length === 0) {
+        list.innerHTML = '<p class="text-gray-400 text-center">No comments yet</p>';
+    }
+
+    comments.forEach(c => {
+        list.innerHTML += renderComment(c);
+    });
+
+    modal.classList.remove("hidden");
+}
+
+// Close popup
+function closeComments() {
+    document.getElementById("commentsModal").classList.add("hidden");
+}
+
+// Render single comment HTML
+function renderComment(c) {
+    return `
+      <div class="pb-3 border-b">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
+            ${c.profile_image 
+                ? `<img src="/api/${c.profile_image}" class="w-full h-full object-cover">`
+                : `<div class='w-full h-full bg-gray-300'></div>`}
+          </div>
+          <div class="text-sm font-medium">
+            ${c.first_name} ${c.last_name}
+            <span class="text-gray-400 text-xs ml-1">${timeAgo(c.created_at)}</span>
+          </div>
+        </div>
+
+        <p class="ml-10 text-gray-700 text-sm">${c.comment}</p>
+      </div>
+    `;
+}
+
+// Time ago format
+function timeAgo(dateStr) {
+    const date = new Date(dateStr);
+    const seconds = Math.floor((new Date() - date) / 1000);
+
+    let interval = seconds / 31536000;
+    if (interval > 1) return Math.floor(interval) + " years ago";
+
+    interval = seconds / 2592000;
+    if (interval > 1) return Math.floor(interval) + " months ago";
+
+    interval = seconds / 86400;
+    if (interval > 1) return Math.floor(interval) + " days ago";
+
+    interval = seconds / 3600;
+    if (interval > 1) return Math.floor(interval) + " hours ago";
+
+    interval = seconds / 60;
+    if (interval > 1) return Math.floor(interval) + " minutes ago";
+
+    return "just now";
+}
+
+// Send new comment
+async function sendComment() {
+    const input = document.getElementById("commentInput");
+    let text = input.value.trim();
+    if (!text) return;
+
+    const form = new FormData();
+    form.append("app_user_id", currentUserId);
+    form.append("salon_post_id", currentPostId);
+    form.append("comment", text);
+
+const payload = {
+    app_user_id: <%= session.user.id %>,
+    salon_post_id: currentPostId,
+    comment: text
+  };
+
+    // const res = await fetch("/api/post-comment", {
+    //     method: "POST",
+    //     body: form
+    // });
+
+    // const data = await res.json();
+
+    // if (data.success) {
+    //     // Add new comment to UI
+    //     const list = document.getElementById("commentsList");
+    //     list.innerHTML += renderComment(data.comment);
+
+    //     input.value = "";
+    //     list.scrollTop = list.scrollHeight;
+    // }
+
+
+    try {
+    const response = await fetch("/api/post-comment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+     // alert("Post reported.");
+//      const list = document.getElementById("commentsList");
+// list.insertAdjacentHTML("afterbegin", renderComment({
+//     first_name: "<%= session.user.first_name %>",
+//     last_name: "<%= session.user.last_name %>",
+//     profile_image: "<%= session.user.profile_image %>",
+//     comment: text,
+//     created_at: new Date().toISOString()
+// }));
+
+
+            input.value = "";
+      location.reload();   // 🔥 refresh page after success
+    } else {
+      alert("Failed to  post comment. Try again.");
+    }
+
+  } catch (err) {
+    console.error("API error:", err);
+    alert("Something went wrong.");
+  }
+}
+</script>
+
+
+
+</html>

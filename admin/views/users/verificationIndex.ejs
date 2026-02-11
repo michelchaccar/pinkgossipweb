@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html :class="{ 'theme-dark': dark }" x-data="data()" lang="en">
+
+<head>
+  <%- include('../include/_head') %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js"></script>
+  <!-- Bootstrap CSS -->
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+
+<!-- Bootstrap JS (Requires jQuery & Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+
+<style>
+  .verify-text{
+    margin: 5px;
+    color: #005800;
+    font-weight: 600;
+  }
+ 
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal box */
+.modal-content {
+    background: #ffffff;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease-in-out;
+}
+
+/* Close button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #555;
+}
+
+.close:hover {
+    color: #000;
+}
+
+/* Video container */
+.video-container {
+    margin: 15px 0;
+}
+
+video {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styles */
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.verify-btn, .cancel-btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 45%;
+}
+
+.verify-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.verify-btn:hover {
+    background-color: #218838;
+}
+
+.cancel-btn:hover {
+    background-color: #c82333;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip-container .tooltip-text {
+    visibility: hidden;
+    width: max-content;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    padding: 5px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    
+    /* Hidden by default */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Show tooltip on hover */
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+#verifyVideo{
+  height: 50vh;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+
+.user-name {
+    font-weight: bold;
+    margin: 0;
+}
+
+.user-birthdate {
+    font-size: 12px;
+    color: black;
+}
+
+</style>
+
+<body>
+    <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
+
+    <!-- Desktop sidebar -->
+
+    <%- include('../include/_sidebar') %>
+    
+    <div class="flex flex-col flex-1 w-full">
+
+      <%- include('../include/_header') %>
+
+      
+     <main class="h-full overflow-y-auto">
+        <div class="container mx-auto grid px-6">
+         <div class="flex justify-between">
+            <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+                Verification Users
+              </h2>
+         </div>
+         <div id="showing-info"></div>
+
+         <!-- Search input -->
+        
+          <!-- Table -->
+          <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+            <div id="all-tab" class="w-full rounded-lg shadow-xs">
+            <div class="w-full overflow-x-auto">
+              <table class="w-full whitespace-no-wrap">
+                <div class="row mt-4 flex flex-1 w-full mb-2">
+                  <div class="relative col-sm-12 col-md-6 max-w-xl ml-6 focus-within:text-purple-500" >
+                    <div class="absolute inset-y-0 flex items-center pl-2">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" style="fill:var(--);">
+                        <path fill-rule="evenodd"
+                          d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                          clip-rule="evenodd"></path>
+                      </svg>
+                    </div>
+                    <input
+                      class=" search-input-1 w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                      type="text" placeholder="Search" aria-label="Search"  style="    border: 1px solid #D5D6D7;"/>
+                  </div>
+                </div>
+                <!-- <div class="row mt-4"><div class="col-sm-12 col-md-6"></div><div class="col-sm-12 col-md-6"><div style="text-align: right;"><label>Search:<input type="search" class="form-control form-control-sm search-input-1" placeholder="" style="margin-left: 0.5em;
+                  display: inline-block;
+                  width: auto;"></label></div></div></div> -->
+                <thead>
+                  <tr
+                    class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                    <th class="px-4 py-3" style="width: 150px">Name</th>
+                    <th class="px-4 py-3">Email</th>
+                    <th class="px-4 py-3">Date of birth</th>
+                    <th class="px-4 py-3">Gender</th>
+                    <th class="px-4 py-3">Hometown</th>
+                    <th class="px-4 py-3">No. Posts</th>
+                    <th class="px-4 py-3">Registration Date</th>
+                    <th class="px-4 py-3">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800 table-tbody">
+                  <% if (userData && userData.length> 0) { %>
+                    <% userData.forEach(function(user) { %>
+                        <% if (user.verify_video != null){ %>
+                  <tr class="text-gray-700 dark:text-gray-400  table-row">
+                    <td class="px-4 py-3" style="text-wrap: wrap;">
+                      <div class="flex items-center text-sm">
+                        <div class="relative w-8 h-8 mr-3 rounded-full md:block">
+                          <img class="object-cover w-full h-full rounded-full"
+                              src="<%= user.first_image === null ? base_url + '/img' + '/photo-1570612861542-284f4c12e75f.jpg' : '/upload/' + user.first_image %>"
+                              alt="" loading="lazy" />
+                            <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                          </div>
+                        <div>
+                          <p class="font-semibold"> <%= user.first_name %>  <%= user.last_name %></p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= user.email %>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= user.dob ? new Date(user.dob).toLocaleDateString() : 'N/A' %>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= user.gender %>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= user.hometown %>
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                        5
+                    </td>
+                    <td class="px-4 py-3 text-sm" style="text-wrap: wrap;">
+                      <%= user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A' %>
+                    </td>
+                    <td>
+                      <div class="flex flex-row">
+                        <% if (user.is_verify == 0){ %>
+                          <div class="tooltip-container">
+                            <button class="border rounded px-4 py-1 mr-2"
+                                <% if (!user.verify_video) { %>
+                                    disabled
+                                <% } else { %>
+                                  onclick="openVerifyModal('<%= user.verify_video %>', '<%= user.id %>', '<%= user.first_image %>', '<%= user.first_name %> <%= user.last_name %>', '<%= user.dob ? new Date(user.dob).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A' %>')"
+                                <% } %>
+                            >
+                                Verify
+                            </button>
+                        
+                            <% if (!user.verify_video) { %>
+                                <span class="tooltip-text">Verify video not uploaded</span>
+                            <% } %>
+                        </div>
+                        
+                          <%  } else { %>
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full mr-2">
+                                Verified
+                              </span>
+                                   
+                          <%  } %>
+                          <a href="/admin/user-details/<%= user.id  %>">
+                            <button class="border rounded px-4 py-1 mr-2">Details</button>
+                          </a>
+                          <a href="javascript:void(0);" onclick="ajaxCallUpdateStatus('/admin/user-update-status/<%= user.id %>/delete', 'Are you sure you want to delete this user?', 'user-active-3')">
+                            <button class="border rounded px-4 py-1 mr-2">Delete</button>
+                        </a>
+                        <% if (user.suspend == 0) { %>
+                            <a href="javascript:void(0);" onclick="ajaxCallUpdateStatus('/admin/user-update-status/<%= user.id %>/suspend', 'Are you sure you want to suspend this user?', 'user-active-3')">
+                                <button class="border rounded px-4 py-1">Suspend</button>
+                            </a>
+                        <% } else { %>
+                            <a href="javascript:void(0);" onclick="ajaxCallUpdateStatus('/admin/user-update-status/<%= user.id %>/unsuspend', 'Are you sure you want to unsuspend this user?', 'user-active-3')">
+                                <button class="border rounded px-4 py-1">UnSuspend</button>
+                            </a>
+                        <% } %>   
+                    </div>
+                    </td>
+                  </tr>
+                  <% } %>
+                  <% } ) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+            <div
+                    class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
+                    <span class="flex items-center col-span-3" id="showing-info-1">
+                      <!-- Showing 21-30 of 100 -->
+                    </span>
+                    <span class="col-span-2"></span>
+                    <!-- Pagination -->
+                    <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                      <nav aria-label="Table navigation">
+                        <div id="pagination-container-1"></div>
+                      </nav>
+                    </span>
+                  </div>
+            </div>
+        </div>
+        </div>
+      </main>
+      <!-- end content -->
+    </div>
+  </div>
+
+  <div id="verifyModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeVerifyModal()">&times;</span>
+        <h2>Video Verification</h2>
+
+        <div class="user-info">
+          <img id="userImage" class="user-image" src="" alt="User Image">
+          <div class="user-details">
+              <p id="userName" class="user-name"></p>
+              <p id="userBirthDate" class="user-birthdate"></p>
+          </div>
+      </div>
+
+        <div class="video-container">
+            <video id="verifyVideo" controls></video>
+        </div>
+
+        <div class="modal-actions">
+            <button class="verify-btn" onclick="verifyVideo()">✅ Verify</button>
+            <button class="cancel-btn" onclick="closeVerifyModal()">❌ Cancel</button>
+        </div>
+    </div>
+</div>
+
+  <%- include('../include/_footer') %>
+
+  <script>
+    $(document).ready(function() {
+        $('.user-verify-sidebar').each(function() {
+          var spanElement = $('<span class="absolute inset-y-0 left-0 w-1 rounded-tr-lg rounded-br-lg" style="background-color:var(--blue-color);" aria-hidden="true"></span>');
+              $(this).before(spanElement);
+              $(this).addClass('text-gray-800');
+        });
+    });
+
+  </script>
+<script>
+ 
+ let userIdForVerification = null; // Variable to store userId for verification
+
+// Function to open the modal and pass video name and user ID
+  function openVerifyModal(videoName, userId, userImage, userName, userBirthDate) {
+
+    let profileImagePath;
+    if(userImage != ''){
+      profileImagePath = "/upload/" + userImage
+    }else{
+      profileImagePath = "/img/photo-1570612861542-284f4c12e75f.jpg"
+    }
+
+    // Set the video path in the modal
+    let videoPath = "/upload/" + videoName;
+
+    // Set the video source
+    document.getElementById("verifyVideo").src = videoPath;
+
+    document.getElementById("userImage").src = profileImagePath;
+    document.getElementById("userName").textContent = userName;
+    document.getElementById("userBirthDate").textContent = userBirthDate;
+    // Show the modal
+    document.getElementById("verifyModal").style.display = "flex";
+
+    // Store the userId in a global variable for later use in verification
+    userIdForVerification = userId;
+}
+
+// Function to close the modal
+function closeVerifyModal() {
+    document.getElementById("verifyModal").style.display = "none"; // Hide modal
+}
+
+// Function to handle video verification (called when "Verify" button is clicked)
+function verifyVideo() {
+    if (userIdForVerification) {
+      
+        fetch('/admin/update-verify-status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: userIdForVerification,
+                is_verify: 1 
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Video Verified Successfully!');
+                closeVerifyModal(); // Close the modal after success
+                window.location.reload(); // Corrected: Reload the page
+              } else {
+                alert('Verification failed!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during verification');
+        });
+    } else {
+        alert('No user selected for verification');
+    }
+}
+
+</script>
+
+
+</body>
+</html>
+
+

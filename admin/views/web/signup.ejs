@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../include/_head') %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Gossip - Beauty Salon Discovery</title>
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRNjykxoRKwqenOpoqBdoYz1CTvPYI5So&libraries=places"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FBE3E6',
+                        secondary: '#fce7f3',
+                        'pink-primary': '#FBE3E6',
+                        'pink-secondary': '#fce7f3',
+                        'pink-accent': '#EC1F95',
+                        'black-secondary': '#22222C',
+                        'color-secondary': '#717171',
+                        'color-gray-2': '#2C2C2C',
+                        'underline-color': '#EBEBEB',
+                        'input-border': '#D0D0D0'
+                    },
+                    fontFamily: {
+                        'sans': ['Roboto', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Italiana&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-to-br from-pink-50 to-white font-sans">
+    <!-- Top Navigation -->
+    <nav class="bg-pink-primary/90 backdrop-blur-md border-b border-pink-200 sticky top-0 z-50">
+        <div class="px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <img src="/img/logo3x.png" class="h-12" />
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto min-h-screen">
+        <!-- Main Content -->
+        <div class="flex gap-8 p-6">
+
+            <!-- Register Salon Form -->
+            <main class="flex-1 mx-auto space-y-6">
+                <!-- Fields -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="p-10">
+                        <h2 class="text-2xl font-semibold mb-4">Register Your Salon</h2>
+                        <form class="w-full mx-auto p-8 space-y-6 submitsByAjax" method="post" action="/signupsubmit" >
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Username -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                                    <input type="text" name="user_name"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                </div>
+
+                                <!-- First Name -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                    <input type="text" name="first_name"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                </div>
+
+                                <!-- Last Name -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                    <input type="text" name="last_name"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                </div>
+
+                                <!-- Email -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input type="email" name="email"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                      
+                                      </div>
+
+                                <!-- Salon Name -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Salon Name</label>
+                                    <input type="text" name="salon_name"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                </div>
+
+                                <!-- Category -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <select name="category" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent">
+                                    <option value="">Select Category</option>
+                                    <option value="Hair Salon">Hair Salon</option>
+                                    <option value="Esthetics" >Esthetics</option>
+                                    <option value="Medico Esthetic" >Medico Esthetic</option>
+                                    <option value="Nails Spa">Nails Spa</option>
+                                    <option value="Tatoo" >Tatoo</option>
+                                    <option value="Barbershop" >Barbershop</option>
+                                    <option value="Spa Facility" >Spa Facility</option>
+                                    <option value="Messages">Messages</option>
+                                    <option value="Plastic Surgery">Plastic Surgery</option>
+                                    <option value="Lashes and Brows">Lashes and Brows</option>
+                                    <option value="Others">Others</option>
+                                </select>
+                                      </div>
+
+                                <!-- Contact Number -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
+                                    <input type="text" name="contact_no"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                </div>
+
+                                <!-- Website -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Website</label>
+                                    <input type="url" name="site_name"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                </div>
+
+                                <!-- Address -->
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                    <input id="autocomplete" type="text" name="address"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                </div>
+ <input type="hidden" name="latitude" id="latitude" value="">
+                            <input type="hidden" name="longitude" id="longitude" value="">
+                                <!-- Description -->
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                    <textarea name="description" rows="3"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent"></textarea>
+                                </div>
+
+                                <!-- Profile Image (Drag & Drop with Preview) 
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
+
+                                    <div id="drop-area"
+                                        class="flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200 p-6 text-center">
+                                        <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor"
+                                            stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        <p class="text-sm text-gray-600">
+                                            <span class="font-medium text-pink-accent hover:underline">Click to
+                                                upload</span> or drag and drop
+                                        </p>
+                                        <p class="text-xs text-gray-400 mt-1">PNG, JPG or GIF (max. 5MB)</p>
+                                        <input id="profile_image" type="file" accept="image/*" class="hidden" />
+                                    </div>
+
+                                 --- Image Preview ---
+                                    <div id="preview" class="mt-4 hidden">
+                                        <img id="preview-img"
+                                            class="w-32 h-32 object-cover rounded-lg border border-gray-200"
+                                            alt="Preview" />
+                                    </div>
+                                </div> -->
+
+                               
+
+                                <!-- Password -->
+                                <div class="relative">
+                                  <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                  <input type="password" minlength="6" id="password" name="password"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                  <button
+                                    type="button"
+                                    onclick="togglePassword('password', this)"
+                                    class="absolute text-gray-600"
+                                    style="top: 36px; right: 10px;"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                      stroke="currentColor" class="w-5 h-5">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                  </button>
+                                </div>
+
+                                  <!-- Confirm Password -->
+                                  <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                                    <input type="password"  minlength="6" id="confirm_password" name="confirm_password"
+                                      class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-pink-accent focus:border-pink-accent" />
+                                    <button
+                                      type="button"
+                                      onclick="togglePassword('confirm_password', this)"
+                                      class="absolute text-gray-600"
+                                      style="top: 36px; right: 10px;"
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                      </svg>
+                                    </button>
+                                  </div>
+
+
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="text-center pt-4">
+                                <button 
+                                    class="px-6 py-2 bg-pink-accent text-white font-semibold rounded-lg border border-transparent transition-all duration-200 hover:bg-white hover:text-pink-accent hover:border-pink-accent">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+  <p class="text-center text-gray-600 mt-4">
+                Already have an account?
+                <a href="login" class="text-pink-accent font-medium hover:underline">
+                    Login
+                </a>
+            </p>
+                        <script>
+                            const dropArea = document.getElementById("drop-area");
+                            const fileInput = document.getElementById("profile_image");
+                            const previewContainer = document.getElementById("preview");
+                            const previewImg = document.getElementById("preview-img");
+
+                            // When clicking the drop zone, open file input
+                            dropArea.addEventListener("click", () => fileInput.click());
+
+                            // Highlight on drag over
+                            dropArea.addEventListener("dragover", (e) => {
+                                e.preventDefault();
+                                dropArea.classList.add("border-pink-accent", "bg-pink-50");
+                            });
+
+                            dropArea.addEventListener("dragleave", () => {
+                                dropArea.classList.remove("border-pink-accent", "bg-pink-50");
+                            });
+
+                            dropArea.addEventListener("drop", (e) => {
+                                e.preventDefault();
+                                dropArea.classList.remove("border-pink-accent", "bg-pink-50");
+                                const file = e.dataTransfer.files[0];
+                                handleFile(file);
+                            });
+
+                            fileInput.addEventListener("change", (e) => {
+                                const file = e.target.files[0];
+                                handleFile(file);
+                            });
+
+                            function handleFile(file) {
+                                if (!file) return;
+                                if (!file.type.startsWith("image/")) {
+                                    alert("Please upload an image file.");
+                                    return;
+                                }
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    previewImg.src = e.target.result;
+                                    previewContainer.classList.remove("hidden");
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        </script>
+
+                    </div>
+                </div>
+
+
+
+            </main>
+        </div>
+    </div>
+    <%- include('../include/_footer') %>
+</body>
+<script>
+  function togglePassword(id, btn) {
+    const input = document.getElementById(id);
+    const svg = btn.querySelector("svg");
+
+    if (input.type === "password") {
+      input.type = "text";
+      // Full eye with slash (visible)
+      svg.innerHTML = `
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.641-4.362M9.88 9.88a3 3 0 104.24 4.24" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M3 3l18 18" />
+      `;
+    } else {
+      input.type = "password";
+      // Normal eye (hidden)
+      svg.innerHTML = `
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+      `;
+    }
+  }
+</script>
+ <script>
+      $(document).ready(function () {
+        var type = 'create';
+        $('.submitsByAjax').submit(function (e) {
+             e.preventDefault();
+             var dataToPass = $(this).serialize();
+
+             ajaxCallFormSubmit($(this), false, 'Loading! Please wait...', dataToPass,
+                 type === 'create' ? postCreate : undefined);
+         });
+        function postCreate() {
+             switch_between_register_to_registerAnother_btn($('.submitsByAjax'), false);
+         }
+     });
+  </script>
+  <script>
+    let autocomplete;
+    function initAutocomplete() {
+      const input = document.getElementById("autocomplete");
+      autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ["geocode"]
+      });
+  
+      autocomplete.addListener("place_changed", fillInAddress);
+    }
+  
+    function fillInAddress() {
+      const place = autocomplete.getPlace();
+  
+      // Coordinates
+      const lat = place.geometry?.location.lat();
+      const lng = place.geometry?.location.lng();
+      document.getElementById("latitude").value = lat || '';
+      document.getElementById("longitude").value = lng || '';
+  
+    
+    }
+  
+    window.addEventListener("load", initAutocomplete);
+  </script>
+
+</html>

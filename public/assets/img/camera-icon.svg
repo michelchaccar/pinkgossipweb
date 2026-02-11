@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33">
+  <g id="camera-icon" transform="translate(-8 -5)">
+    <circle id="Ellipse_9" data-name="Ellipse 9" cx="16.5" cy="16.5" r="16.5" transform="translate(8 5)" fill="#ec1f95"/>
+    <path id="camera-icon-2" data-name="camera-icon" d="M7.442,2,5.887,3.555H3.555A1.558,1.558,0,0,0,2,5.11v9.33a1.558,1.558,0,0,0,1.555,1.555H15.994a1.558,1.558,0,0,0,1.555-1.555V5.11a1.558,1.558,0,0,0-1.555-1.555H13.662L12.107,2ZM9.775,5.887A3.887,3.887,0,1,1,5.887,9.775,3.849,3.849,0,0,1,9.775,5.887Zm0,1.166A2.721,2.721,0,1,0,12.5,9.775,2.721,2.721,0,0,0,9.775,7.053Z" transform="translate(15 13)" fill="#fff"/>
+  </g>
+</svg>
