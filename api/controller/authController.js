@@ -84,6 +84,20 @@ exports.signUp = async function (req, res, next) {
                     console.log("Done");
                      const sent = await emailCon.sendEmail(req.body.email, temp_path,'api', subject);
                     await post.notification_store(req, notificationArray);
+
+                    // Event bonus: 1000 points for signups during March 27-29 2026 (Montreal time)
+                    const now = new Date();
+                    const eventStart = new Date('2026-03-27T04:00:00Z');
+                    const eventEnd = new Date('2026-03-30T04:00:00Z');
+                    if (now >= eventStart && now < eventEnd) {
+                        await appUser.point_store(req, {
+                            user_id: response.id,
+                            point: 1000,
+                            type: 'event_signup',
+                            created_at: new Date(),
+                        });
+                    }
+
                     res.json({ success: true, response: response, message: 'Registration successfully' });
                 }
             });
@@ -197,6 +211,19 @@ exports.login = async function (req, res, next) {
                         if (err) {
                             res.json({ success: false, message: 'Something went wrong' });
                         } else {
+                            // Event bonus: 1000 points for signups during March 27-29 2026 (Montreal time)
+                            const now = new Date();
+                            const eventStart = new Date('2026-03-27T04:00:00Z');
+                            const eventEnd = new Date('2026-03-30T04:00:00Z');
+                            if (now >= eventStart && now < eventEnd) {
+                                await appUser.point_store(req, {
+                                    user_id: response.id,
+                                    point: 1000,
+                                    type: 'event_signup',
+                                    created_at: new Date(),
+                                });
+                            }
+
                             res.json({ success: true, response: response, message: 'Login successfully' });
                         }
                     });
@@ -233,6 +260,19 @@ exports.login = async function (req, res, next) {
                         if (err) {
                             res.json({ success: false, message: 'Something went wrong' });
                         } else {
+                            // Event bonus: 1000 points for signups during March 27-29 2026 (Montreal time)
+                            const now = new Date();
+                            const eventStart = new Date('2026-03-27T04:00:00Z');
+                            const eventEnd = new Date('2026-03-30T04:00:00Z');
+                            if (now >= eventStart && now < eventEnd) {
+                                await appUser.point_store(req, {
+                                    user_id: response.id,
+                                    point: 1000,
+                                    type: 'event_signup',
+                                    created_at: new Date(),
+                                });
+                            }
+
                             res.json({ success: true, response: response, message: 'Login successfully', userExists: false});
                         }
                     });
