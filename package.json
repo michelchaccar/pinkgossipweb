@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.975.0",
+    "@aws-sdk/client-ses": "^3.470.0",
     "@ffprobe-installer/ffprobe": "^2.1.2",
     "@skavinvarnan/cryptlib": "^1.0.3",
     "async": "^3.2.4",
